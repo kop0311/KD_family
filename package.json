@@ -21,7 +21,12 @@
     "wait-for-services": "node scripts/wait-for-services.js",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:test": "docker-compose -f docker-compose.dev.yml --profile testing up -d",
-    "docker:down": "docker-compose -f docker-compose.dev.yml down"
+    "docker:down": "docker-compose -f docker-compose.dev.yml down",
+    "caddy:dev": "./scripts/deploy-caddy.sh dev",
+    "caddy:prod": "./scripts/deploy-caddy.sh prod",
+    "caddy:logs": "./scripts/deploy-caddy.sh logs caddy",
+    "caddy:health": "./scripts/deploy-caddy.sh health",
+    "caddy:restart": "./scripts/deploy-caddy.sh restart caddy"
   },
   "dependencies": {
     "axios": "^1.10.0",

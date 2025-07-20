@@ -1,0 +1,214 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-config
+  namespace: kd-family
+data:
+  Caddyfile: |
+    :80 {
+        # 安全头部
+        header {
+            Strict-Transport-Security "max-age=31536000; includeSubDomains"
+            X-Content-Type-Options "nosniff"
+            X-Frame-Options "SAMEORIGIN"
+            X-XSS-Protection "1; mode=block"
+            Referrer-Policy "strict-origin-when-cross-origin"
+        }
+
+        # API路由 - 反向代理到后端
+        handle /api/* {
+            reverse_proxy backend-service:3000 {
+                health_uri /health
+                health_interval 30s
+                health_timeout 5s
+                header_up Host {upstream_hostport}
+                header_up X-Real-IP {remote_host}
+                header_up X-Forwarded-For {remote_host}
+                header_up X-Forwarded-Proto {scheme}
+            }
+        }
+
+        # 文件上传路由
+        handle /uploads/* {
+            reverse_proxy backend-service:3000
+        }
+
+        # 静态文件服务 - 前端应用
+        handle /* {
+            try_files {path} /index.html
+            root * /var/www/kdfamily
+            file_server {
+                hide .htaccess .env
+            }
+        }
+
+        # 缓存策略
+        @static {
+            path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+        }
+        header @static Cache-Control "public, max-age=31536000, immutable"
+        
+        @html {
+            path *.html
+        }
+        header @html Cache-Control "no-cache, no-store, must-revalidate"
+
+        # 访问日志
+        log {
+            output stdout
+            format json
+        }
+    }
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: caddy-data-pvc
+  namespace: kd-family
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy
+  namespace: kd-family
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: caddy
+  template:
+    metadata:
+      labels:
+        app: caddy
+    spec:
+      containers:
+      - name: caddy
+        image: caddy:2-alpine
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - name: caddy-config
+          mountPath: /etc/caddy
+        - name: static-files
+          mountPath: /var/www/kdfamily
+        - name: caddy-data
+          mountPath: /data
+        - name: caddy-config-storage
+          mountPath: /config
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      volumes:
+      - name: caddy-config
+        configMap:
+          name: caddy-config
+      - name: static-files
+        emptyDir: {}
+      - name: caddy-data
+        persistentVolumeClaim:
+          claimName: caddy-data-pvc
+      - name: caddy-config-storage
+        emptyDir: {}
+      initContainers:
+      - name: frontend-build
+        image: kdfamily/frontend:latest
+        command: ['sh', '-c', 'cp -r /usr/share/nginx/html/* /var/www/kdfamily/']
+        volumeMounts:
+        - name: static-files
+          mountPath: /var/www/kdfamily
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: caddy-service
+  namespace: kd-family
+spec:
+  selector:
+    app: caddy
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+  type: LoadBalancer
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kd-family-ingress
+  namespace: kd-family
+  annotations:
+    kubernetes.io/ingress.class: "caddy"
+    caddy.ingress.kubernetes.io/tls: "auto"
+spec:
+  tls:
+  - hosts:
+    - kdfamily.example.com
+    secretName: kd-family-tls
+  rules:
+  - host: kdfamily.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: caddy-service
+            port:
+              number: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: caddy-hpa
+  namespace: kd-family
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: caddy
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
