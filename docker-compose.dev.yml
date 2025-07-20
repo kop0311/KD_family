@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  # Caddy development proxy
+  caddy-dev:
+    image: caddy:2-alpine
+    container_name: kdfamily_caddy_dev
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8025:8025"
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - caddy_dev_logs:/var/log/caddy
+    networks:
+      - kdfamily_dev_network
+    restart: unless-stopped
+    profiles:
+      - proxy
+
   # Development MySQL database
   mysql-dev:
     image: mysql:8.0
@@ -155,6 +172,7 @@ volumes:
   mysql_dev_data:
   redis_dev_data:
   grafana_data:
+  caddy_dev_logs:
 
 networks:
   kdfamily_dev_network:
