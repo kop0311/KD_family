@@ -1,0 +1,58 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kdfamily_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: kdfamily
+      MYSQL_USER: kdfamily_user
+      MYSQL_PASSWORD: kdfamily_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - kdfamily_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  app:
+    build: ..
+    container_name: kd_family
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_USER: kdfamily_user
+      DB_PASSWORD: kdfamily_pass
+      DB_NAME: kdfamily
+      DB_PORT: 3306
+      JWT_SECRET: kdfamily_jwt_secret_key_for_development_only
+      JWT_EXPIRES_IN: 7d
+      PORT: 3000
+      DOMAIN: localhost
+      MAX_FILE_SIZE: 5242880
+    volumes:
+      - ..:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - kdfamily_network
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  kdfamily_network:
+    driver: bridge

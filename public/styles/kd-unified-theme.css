@@ -1,0 +1,654 @@
+/* 🏡 KD之家 - 统一设计系统 2.0 */
+/* 融合family-theme与modern-design的优势，创建一致性更强的设计语言 */
+
+/* ===== 设计令牌 (Design Tokens) ===== */
+:root {
+  /* 🎨 核心色彩系统 */
+  /* 主色调 - KD家庭橙 (温暖、包容) */
+  --kd-primary-50: #fff7ed;
+  --kd-primary-100: #ffedd5;
+  --kd-primary-200: #fed7aa;
+  --kd-primary-300: #fdba74;
+  --kd-primary-400: #fb923c;
+  --kd-primary-500: #f97316; /* 品牌主色 */
+  --kd-primary-600: #ea580c;
+  --kd-primary-700: #c2410c;
+  --kd-primary-800: #9a3412;
+  --kd-primary-900: #7c2d12;
+
+  /* 次色调 - 成长绿 (希望、进步) */
+  --kd-secondary-50: #f0fdf4;
+  --kd-secondary-100: #dcfce7;
+  --kd-secondary-200: #bbf7d0;
+  --kd-secondary-300: #86efac;
+  --kd-secondary-400: #4ade80;
+  --kd-secondary-500: #22c55e; /* 成功色 */
+  --kd-secondary-600: #16a34a;
+  --kd-secondary-700: #15803d;
+  --kd-secondary-800: #166534;
+  --kd-secondary-900: #14532d;
+
+  /* 支持色 - 信任蓝 (可靠、专业) */
+  --kd-accent-50: #eff6ff;
+  --kd-accent-100: #dbeafe;
+  --kd-accent-200: #bfdbfe;
+  --kd-accent-300: #93c5fd;
+  --kd-accent-400: #60a5fa;
+  --kd-accent-500: #3b82f6; /* 信息色 */
+  --kd-accent-600: #2563eb;
+  --kd-accent-700: #1d4ed8;
+  --kd-accent-800: #1e40af;
+  --kd-accent-900: #1e3a8a;
+
+  /* 🌟 语义化色彩 */
+  --kd-success: var(--kd-secondary-500);
+  --kd-success-bg: var(--kd-secondary-50);
+  --kd-success-border: var(--kd-secondary-200);
+  
+  --kd-warning: #fbbf24;
+  --kd-warning-bg: #fef3c7;
+  --kd-warning-border: #fde68a;
+  
+  --kd-error: #ef4444;
+  --kd-error-bg: #fef2f2;
+  --kd-error-border: #fecaca;
+  
+  --kd-info: var(--kd-accent-500);
+  --kd-info-bg: var(--kd-accent-50);
+  --kd-info-border: var(--kd-accent-200);
+
+  /* 🎯 任务状态色彩 */
+  --task-pending: #fbbf24;
+  --task-pending-bg: #fef3c7;
+  --task-progress: #60a5fa;
+  --task-progress-bg: #dbeafe;
+  --task-completed: #34d399;
+  --task-completed-bg: #d1fae5;
+  --task-overdue: #f87171;
+  --task-overdue-bg: #fee2e2;
+
+  /* 🏆 成就等级色彩 */
+  --achievement-bronze: #cd7c2f;
+  --achievement-bronze-bg: #fef3c7;
+  --achievement-silver: #9ca3af;
+  --achievement-silver-bg: #f3f4f6;
+  --achievement-gold: #f59e0b;
+  --achievement-gold-bg: #fef3c7;
+  --achievement-diamond: #8b5cf6;
+  --achievement-diamond-bg: #f3e8ff;
+
+  /* 👥 角色色彩 */
+  --role-advisor: #8b5cf6;
+  --role-advisor-bg: #f3e8ff;
+  --role-parent: var(--kd-primary-500);
+  --role-parent-bg: var(--kd-primary-100);
+  --role-member: var(--kd-secondary-500);
+  --role-member-bg: var(--kd-secondary-100);
+
+  /* 🎨 中性色调 */
+  --kd-neutral-50: #fafaf9;
+  --kd-neutral-100: #f5f5f4;
+  --kd-neutral-200: #e7e5e4;
+  --kd-neutral-300: #d6d3d1;
+  --kd-neutral-400: #a8a29e;
+  --kd-neutral-500: #78716c;
+  --kd-neutral-600: #57534e;
+  --kd-neutral-700: #44403c;
+  --kd-neutral-800: #292524;
+  --kd-neutral-900: #1c1917;
+
+  /* 🌈 情感化渐变 */
+  --gradient-warm: linear-gradient(135deg, var(--kd-primary-500) 0%, var(--kd-primary-400) 100%);
+  --gradient-growth: linear-gradient(135deg, var(--kd-secondary-500) 0%, var(--kd-secondary-400) 100%);
+  --gradient-trust: linear-gradient(135deg, var(--kd-accent-500) 0%, var(--kd-accent-400) 100%);
+  --gradient-celebration: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  --gradient-hero: linear-gradient(135deg, var(--kd-primary-50) 0%, var(--kd-neutral-50) 100%);
+
+  /* 🏠 表面色彩 */
+  --surface-primary: rgba(255, 255, 255, 0.95);
+  --surface-secondary: rgba(250, 250, 249, 0.8);
+  --surface-elevated: rgba(255, 255, 255, 1);
+  --surface-overlay: rgba(28, 25, 23, 0.4);
+
+  /* ✨ 交互状态 */
+  --hover-primary: rgba(249, 115, 22, 0.1);
+  --hover-secondary: rgba(34, 197, 94, 0.1);
+  --hover-accent: rgba(59, 130, 246, 0.1);
+  --active-primary: rgba(249, 115, 22, 0.2);
+  --focus-ring: 0 0 0 3px rgba(249, 115, 22, 0.1);
+
+  /* 📏 空间系统 */
+  --space-xs: 0.25rem;    /* 4px */
+  --space-sm: 0.5rem;     /* 8px */
+  --space-md: 0.75rem;    /* 12px */
+  --space-lg: 1rem;       /* 16px */
+  --space-xl: 1.25rem;    /* 20px */
+  --space-2xl: 1.5rem;    /* 24px */
+  --space-3xl: 2rem;      /* 32px */
+  --space-4xl: 2.5rem;    /* 40px */
+  --space-5xl: 3rem;      /* 48px */
+  --space-6xl: 4rem;      /* 64px */
+
+  /* 🎯 语义化空间 */
+  --space-cozy: var(--space-md);      /* 舒适间距 */
+  --space-friendly: var(--space-xl);  /* 友好间距 */
+  --space-welcoming: var(--space-3xl); /* 欢迎间距 */
+  --space-gathering: var(--space-5xl); /* 聚会间距 */
+
+  /* 🔲 圆角系统 */
+  --radius-xs: 0.25rem;   /* 4px */
+  --radius-sm: 0.375rem;  /* 6px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-3xl: 2rem;     /* 32px */
+  --radius-full: 9999px;
+
+  /* 🎯 语义化圆角 */
+  --radius-gentle: var(--radius-md);    /* 温和圆角 */
+  --radius-friendly: var(--radius-lg);  /* 友好圆角 */
+  --radius-welcoming: var(--radius-xl); /* 欢迎圆角 */
+  --radius-warm: var(--radius-2xl);     /* 温暖圆角 */
+
+  /* 🌟 阴影系统 */
+  --shadow-xs: 0 1px 2px 0 rgba(28, 25, 23, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(28, 25, 23, 0.1), 0 1px 2px 0 rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(28, 25, 23, 0.1), 0 2px 4px -1px rgba(28, 25, 23, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(28, 25, 23, 0.1), 0 4px 6px -2px rgba(28, 25, 23, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(28, 25, 23, 0.1), 0 10px 10px -5px rgba(28, 25, 23, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(28, 25, 23, 0.25);
+
+  /* 🎯 语义化阴影 */
+  --shadow-gentle: var(--shadow-sm);
+  --shadow-warm: var(--shadow-md);
+  --shadow-cozy: var(--shadow-lg);
+  --shadow-welcoming: var(--shadow-xl);
+
+  /* 📝 字体系统 */
+  --font-family-primary: 'Inter', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+
+  /* 字体大小 */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 3rem;       /* 48px */
+
+  /* 字体重量 */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* 🎯 语义化字体重量 */
+  --font-weight-gentle: var(--font-weight-normal);
+  --font-weight-friendly: var(--font-weight-medium);
+  --font-weight-warm: var(--font-weight-semibold);
+  --font-weight-strong: var(--font-weight-bold);
+
+  /* ⚡ 过渡系统 */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 缓动函数 */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* 📱 移动端优化 */
+  --mobile-header-height: 60px;
+  --mobile-nav-height: 70px;
+  --mobile-safe-area-top: env(safe-area-inset-top);
+  --mobile-safe-area-bottom: env(safe-area-inset-bottom);
+
+  /* 🎨 Z-index 层级 */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+/* 🌙 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 深色模式下的表面色彩 */
+    --surface-primary: rgba(28, 25, 23, 0.95);
+    --surface-secondary: rgba(41, 37, 36, 0.9);
+    --surface-elevated: rgba(68, 64, 60, 1);
+    --surface-overlay: rgba(255, 255, 255, 0.1);
+
+    /* 深色模式下的文本色彩 */
+    --kd-neutral-50: #1c1917;
+    --kd-neutral-100: #292524;
+    --kd-neutral-200: #44403c;
+    --kd-neutral-300: #57534e;
+    --kd-neutral-400: #78716c;
+    --kd-neutral-500: #a8a29e;
+    --kd-neutral-600: #d6d3d1;
+    --kd-neutral-700: #e7e5e4;
+    --kd-neutral-800: #f5f5f4;
+    --kd-neutral-900: #fafaf9;
+
+    /* 深色模式下的阴影 */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* 🔍 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  :root {
+    --kd-primary-500: #ea580c;
+    --kd-secondary-500: #15803d;
+    --kd-accent-500: #1d4ed8;
+    --kd-error: #dc2626;
+    --kd-warning: #d97706;
+  }
+}
+
+/* 📱 移动设备优化 */
+@media (max-width: 768px) {
+  :root {
+    /* 移动端间距调整 */
+    --space-cozy: var(--space-sm);
+    --space-friendly: var(--space-lg);
+    --space-welcoming: var(--space-2xl);
+    --space-gathering: var(--space-3xl);
+    
+    /* 移动端圆角调整 */
+    --radius-gentle: var(--radius-sm);
+    --radius-friendly: var(--radius-md);
+    --radius-welcoming: var(--radius-lg);
+    --radius-warm: var(--radius-xl);
+    
+    /* 移动端字体调整 */
+    --text-3xl: 1.5rem;   /* 24px */
+    --text-4xl: 1.875rem; /* 30px */
+    --text-5xl: 2.25rem;  /* 36px */
+  }
+}
+
+/* 🎯 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0s;
+    --transition-normal: 0s;
+    --transition-slow: 0s;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== 基础样式重置 ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  line-height: 1.5;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.6;
+  color: var(--kd-neutral-900);
+  background: var(--gradient-hero);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ===== 语义化样式类 ===== */
+
+/* 主题应用类 */
+.kd-theme {
+  --primary-color: var(--kd-primary-500);
+  --secondary-color: var(--kd-secondary-500);
+  --accent-color: var(--kd-accent-500);
+  --success-color: var(--kd-success);
+  --warning-color: var(--kd-warning);
+  --error-color: var(--kd-error);
+  --info-color: var(--kd-info);
+}
+
+/* 继承现有family-theme类 */
+.family-theme {
+  @extend .kd-theme;
+}
+
+/* 布局容器 */
+.kd-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-friendly);
+}
+
+.kd-container--fluid {
+  max-width: none;
+  padding: 0 var(--space-cozy);
+}
+
+/* 表面色彩 */
+.surface-primary {
+  background: var(--surface-primary);
+  backdrop-filter: blur(20px);
+}
+
+.surface-secondary {
+  background: var(--surface-secondary);
+}
+
+.surface-elevated {
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-warm);
+}
+
+/* 文本色彩 */
+.text-primary { color: var(--kd-neutral-900); }
+.text-secondary { color: var(--kd-neutral-600); }
+.text-muted { color: var(--kd-neutral-500); }
+.text-accent { color: var(--kd-primary-600); }
+.text-success { color: var(--kd-success); }
+.text-warning { color: var(--kd-warning); }
+.text-error { color: var(--kd-error); }
+.text-info { color: var(--kd-info); }
+
+/* 背景色彩 */
+.bg-primary { background-color: var(--kd-primary-500); }
+.bg-secondary { background-color: var(--kd-secondary-500); }
+.bg-accent { background-color: var(--kd-accent-500); }
+.bg-success { background-color: var(--kd-success); }
+.bg-warning { background-color: var(--kd-warning); }
+.bg-error { background-color: var(--kd-error); }
+.bg-info { background-color: var(--kd-info); }
+
+/* 渐变背景 */
+.bg-gradient-warm { background: var(--gradient-warm); }
+.bg-gradient-growth { background: var(--gradient-growth); }
+.bg-gradient-trust { background: var(--gradient-trust); }
+.bg-gradient-celebration { background: var(--gradient-celebration); }
+
+/* 边框 */
+.border-primary { border-color: var(--kd-primary-300); }
+.border-secondary { border-color: var(--kd-secondary-300); }
+.border-neutral { border-color: var(--kd-neutral-300); }
+
+/* 圆角 */
+.rounded-gentle { border-radius: var(--radius-gentle); }
+.rounded-friendly { border-radius: var(--radius-friendly); }
+.rounded-welcoming { border-radius: var(--radius-welcoming); }
+.rounded-warm { border-radius: var(--radius-warm); }
+
+/* 阴影 */
+.shadow-gentle { box-shadow: var(--shadow-gentle); }
+.shadow-warm { box-shadow: var(--shadow-warm); }
+.shadow-cozy { box-shadow: var(--shadow-cozy); }
+.shadow-welcoming { box-shadow: var(--shadow-welcoming); }
+
+/* 过渡效果 */
+.transition-fast { transition: all var(--transition-fast); }
+.transition-normal { transition: all var(--transition-normal); }
+.transition-slow { transition: all var(--transition-slow); }
+
+/* 交互状态 */
+.hover-warm:hover {
+  background-color: var(--hover-primary);
+}
+
+.focus-ring:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ===== 实用工具类 ===== */
+
+/* 间距 */
+.p-cozy { padding: var(--space-cozy); }
+.p-friendly { padding: var(--space-friendly); }
+.p-welcoming { padding: var(--space-welcoming); }
+.p-gathering { padding: var(--space-gathering); }
+
+.m-cozy { margin: var(--space-cozy); }
+.m-friendly { margin: var(--space-friendly); }
+.m-welcoming { margin: var(--space-welcoming); }
+.m-gathering { margin: var(--space-gathering); }
+
+/* 字体 */
+.font-gentle { font-weight: var(--font-weight-gentle); }
+.font-friendly { font-weight: var(--font-weight-friendly); }
+.font-warm { font-weight: var(--font-weight-warm); }
+.font-strong { font-weight: var(--font-weight-strong); }
+
+/* 尺寸 */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }
+
+/* 显示 */
+.hidden { display: none; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+
+/* Flexbox */
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+
+/* 间隙 */
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+.gap-2xl { gap: var(--space-2xl); }
+.gap-3xl { gap: var(--space-3xl); }
+
+/* 位置 */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+
+/* 文本对齐 */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* 溢出 */
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+.overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }
+
+/* 滚动条样式 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--kd-neutral-100);
+  border-radius: var(--radius-md);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--kd-neutral-300);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--kd-neutral-400);
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kd-neutral-300) var(--kd-neutral-100);
+}
+
+/* ===== 动画系统 ===== */
+
+/* 淡入动画 */
+@keyframes kd-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-lg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: kd-fade-in var(--transition-normal) var(--ease-out);
+}
+
+/* 弹跳动画 */
+@keyframes kd-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-var(--space-sm));
+  }
+}
+
+.animate-bounce {
+  animation: kd-bounce 1.5s infinite ease-in-out;
+}
+
+/* 脉冲动画 */
+@keyframes kd-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse {
+  animation: kd-pulse 1.5s infinite ease-in-out;
+}
+
+/* 滑入动画 */
+@keyframes kd-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: kd-slide-in-right var(--transition-normal) var(--ease-out);
+}
+
+/* 旋转加载动画 */
+@keyframes kd-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: kd-spin 1s linear infinite;
+}
+
+/* ===== 响应式工具类 ===== */
+
+/* 仅在移动设备显示 */
+@media (max-width: 767px) {
+  .mobile-only {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* 仅在桌面设备显示 */
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .kd-container {
+    max-width: none;
+    padding: 0;
+  }
+}

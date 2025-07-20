@@ -1,0 +1,308 @@
+# KD Family - 本地开发环境 Docker Compose 配置
+# 标准化命名规范: kdfamily-local-{service}
+
+services:
+  # ===== 数据库服务 =====
+  database:
+    image: mysql:8.0
+    container_name: kdfamily-local-database
+    hostname: kdfamily-database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-kdfamily_root_2024}
+      MYSQL_DATABASE: ${DB_NAME:-kdfamily_dev}
+      MYSQL_USER: ${DB_USER:-kdfamily_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-kdfamily_pass_2024}
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - kdfamily-local-database-data:/var/lib/mysql
+      - kdfamily-local-database-config:/etc/mysql/conf.d
+      - ./schema:/docker-entrypoint-initdb.d/01-schema
+      - ./docs/database:/docker-entrypoint-initdb.d/02-enhanced
+      - ./database:/docker-entrypoint-initdb.d/03-database
+    networks:
+      - kdfamily-local-network
+    restart: unless-stopped
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --log-error-verbosity=1
+      --general-log=1
+      --general-log-file=/var/lib/mysql/general.log
+      --slow-query-log=1
+      --slow-query-log-file=/var/lib/mysql/slow.log
+      --long_query_time=2
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+      interval: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ===== Redis 缓存服务 =====
+  cache:
+    image: redis:7-alpine
+    container_name: kdfamily-local-cache
+    hostname: kdfamily-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - kdfamily-local-cache-data:/data
+      - kdfamily-local-cache-config:/usr/local/etc/redis
+    networks:
+      - kdfamily-local-network
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+      interval: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # ===== 应用服务（热加载开发模式）=====
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+      target: development
+    image: kdfamily-local-app:latest
+    container_name: kdfamily-local-app
+    hostname: kdfamily-app
+    env_file:
+      - .env
+    environment:
+      # 应用配置
+      NODE_ENV: development
+      PORT: 3000
+      
+      # 数据库配置
+      DB_TYPE: mysql
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-kdfamily_dev}
+      DB_USER: ${DB_USER:-kdfamily_user}
+      DB_PASSWORD: ${DB_PASSWORD:-kdfamily_pass_2024}
+      
+      # Redis配置
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      REDIS_URL: redis://cache:6379
+      
+      # 开发调试配置
+      DEBUG: kdfamily:*
+      LOG_LEVEL: debug
+      NODEMON_WATCH: true
+      DOCKER_CONTAINER: true
+      
+      # 安全配置
+      JWT_SECRET: ${JWT_SECRET:-kdfamily_jwt_secret_dev_2024}
+      BCRYPT_ROUNDS: 10
+    ports:
+      - "3000:3000"    # 应用端口
+      - "9229:9229"    # Node.js 调试端口
+      - "35729:35729"  # LiveReload 端口
+    volumes:
+      # 热加载: 源代码映射
+      - ./server:/app/server:delegated
+      - ./public:/app/public:delegated
+      - ./config:/app/config:delegated
+      - ./scripts:/app/scripts:delegated
+      - ./test:/app/test:delegated
+      - ./docs:/app/docs:delegated
+      
+      # 配置文件映射
+      - ./package.json:/app/package.json:ro
+      - ./package-lock.json:/app/package-lock.json:ro
+      - ./.env:/app/.env:ro
+      
+      # 数据持久化
+      - kdfamily-local-app-uploads:/app/uploads
+      - kdfamily-local-app-logs:/app/logs
+      - kdfamily-local-app-temp:/app/temp
+      
+      # Node.js 优化
+      - kdfamily-local-app-node-modules:/app/node_modules
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    networks:
+      - kdfamily-local-network
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo '🚀 启动 KD Family 开发服务器...' &&
+        npm run wait-for-services &&
+        npm run dev:debug
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+      interval: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # ===== 数据库管理界面 - phpMyAdmin =====
+  db-admin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: kdfamily-local-db-admin
+    hostname: kdfamily-db-admin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-kdfamily_root_2024}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-kdfamily_root_2024}
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 100M
+      MEMORY_LIMIT: 256M
+    ports:
+      - "8080:80"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - kdfamily-local-network
+    restart: unless-stopped
+    volumes:
+      - kdfamily-local-db-admin-config:/etc/phpmyadmin/config.user.inc.php
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      interval: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # ===== 轻量级数据库管理界面 - Adminer =====
+  db-viewer:
+    image: adminer:latest
+    container_name: kdfamily-local-db-viewer
+    hostname: kdfamily-db-viewer
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: pepa-linha
+    ports:
+      - "8081:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - kdfamily-local-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+      interval: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  # ===== Redis 管理界面 - RedisInsight =====
+  cache-admin:
+    image: redislabs/redisinsight:latest
+    container_name: kdfamily-local-cache-admin
+    hostname: kdfamily-cache-admin
+    ports:
+      - "8001:8001"
+    volumes:
+      - kdfamily-local-cache-admin-data:/db
+    depends_on:
+      cache:
+        condition: service_healthy
+    networks:
+      - kdfamily-local-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      interval: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+# ===== 命名卷定义 =====
+volumes:
+  # 数据库相关卷
+  kdfamily-local-database-data:
+    name: kdfamily-local-database-data
+    driver: local
+  kdfamily-local-database-config:
+    name: kdfamily-local-database-config
+    driver: local
+    
+  # 缓存相关卷
+  kdfamily-local-cache-data:
+    name: kdfamily-local-cache-data
+    driver: local
+  kdfamily-local-cache-config:
+    name: kdfamily-local-cache-config
+    driver: local
+    
+  # 应用相关卷
+  kdfamily-local-app-uploads:
+    name: kdfamily-local-app-uploads
+    driver: local
+  kdfamily-local-app-logs:
+    name: kdfamily-local-app-logs
+    driver: local
+  kdfamily-local-app-temp:
+    name: kdfamily-local-app-temp
+    driver: local
+  kdfamily-local-app-node-modules:
+    name: kdfamily-local-app-node-modules
+    driver: local
+    
+  # 管理界面相关卷
+  kdfamily-local-db-admin-config:
+    name: kdfamily-local-db-admin-config
+    driver: local
+  kdfamily-local-cache-admin-data:
+    name: kdfamily-local-cache-admin-data
+    driver: local
+
+# ===== 网络定义 =====
+networks:
+  kdfamily-local-network:
+    name: kdfamily-local-network
+    driver: bridge

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏡 KD之家 - 管理后台预览</title>
+    
+    <!-- 家庭主题设计系统 -->
+    <link rel="stylesheet" href="styles/family-theme.css">
+    <link rel="stylesheet" href="styles/admin-enhanced.css">
+    
+    <!-- 字体引入 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 预览特定样式 -->
+    <style>
+        .preview-banner {
+            background: var(--warm-gradient);
+            color: white;
+            padding: var(--space-friendly);
+            text-align: center;
+            font-weight: var(--font-weight-warm);
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            box-shadow: var(--shadow-warm);
+        }
+        
+        .preview-banner a {
+            color: white;
+            text-decoration: underline;
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .demo-data-notice {
+            background: var(--surface-accent);
+            border: 1px solid var(--family-accent-300);
+            border-radius: var(--radius-friendly);
+            padding: var(--space-friendly);
+            margin: var(--space-friendly) 0;
+            text-align: center;
+            color: var(--family-accent-700);
+        }
+        
+        .feature-highlight {
+            position: relative;
+            animation: gentleGlow 3s infinite;
+        }
+        
+        @keyframes gentleGlow {
+            0%, 100% { box-shadow: var(--shadow-warm); }
+            50% { box-shadow: var(--shadow-cozy); }
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--energy-red);
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-weight: var(--font-weight-bold);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+    
+    <!-- PWA设置 -->
+    <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f97316'><path d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/></svg>">
+</head>
+<body class="family-theme">
+    <!-- 预览横幅 -->
+    <div class="preview-banner">
+        🎉 这是KD之家管理后台的预览版本 - 
+        <a href="#features">查看新功能</a> | 
+        <a href="admin-enhanced.html">进入完整版</a>
+    </div>
+
+    <!-- 通知容器 -->
+    <div id="alertContainer" class="alert-container"></div>
+
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-brand">
+                <div class="brand-icon">🏡</div>
+                <div class="brand-info">
+                    <h1 class="brand-title">KD之家</h1>
+                    <span class="brand-subtitle">温馨管理后台 - 预览版</span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="user-profile">
+                    <img src="/assets/default-avatar.svg" alt="管理员" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">预览用户</span>
+                        <span class="user-role">🔧 系统管理员</span>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="showAlert('这是预览模式，无法跳转', 'info')">
+                    🏠 回到首页
+                </button>
+                <button class="btn-danger" onclick="showAlert('这是预览模式，无法退出', 'info')">
+                    👋 安全退出
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要布局 -->
+    <div class="admin-layout">
+        <!-- 侧边导航 -->
+        <aside class="admin-sidebar">
+            <nav class="sidebar-nav">
+                <!-- 主要功能 -->
+                <div class="nav-group">
+                    <h3 class="nav-group-title">🏠 家庭管理</h3>
+                    <button class="nav-item active" data-view="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-label">家庭概览</span>
+                        <span class="new-badge">NEW</span>
+                    </button>
+                    <button class="nav-item" data-view="members">
+                        <span class="nav-icon">👨‍👩‍👧‍👦</span>
+                        <span class="nav-label">家庭成员</span>
+                    </button>
+                    <button class="nav-item" data-view="tasks">
+                        <span class="nav-icon">📝</span>
+                        <span class="nav-label">任务管理</span>
+                        <span class="new-badge">NEW</span>
+                    </button>
+                    <button class="nav-item" data-view="achievements">
+                        <span class="nav-icon">🏆</span>
+                        <span class="nav-label">成就系统</span>
+                    </button>
+                </div>
+
+                <!-- 数据分析 -->
+                <div class="nav-group">
+                    <h3 class="nav-group-title">📈 数据洞察</h3>
+                    <button class="nav-item" data-view="analytics">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-label">数据分析</span>
+                    </button>
+                    <button class="nav-item" data-view="reports">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-label">报告中心</span>
+                    </button>
+                    <button class="nav-item" data-view="leaderboard">
+                        <span class="nav-icon">🥇</span>
+                        <span class="nav-label">排行榜</span>
+                    </button>
+                </div>
+
+                <!-- 系统设置 -->
+                <div class="nav-group">
+                    <h3 class="nav-group-title">⚙️ 系统设置</h3>
+                    <button class="nav-item" data-view="settings">
+                        <span class="nav-icon">🔧</span>
+                        <span class="nav-label">系统配置</span>
+                    </button>
+                    <button class="nav-item" data-view="logs">
+                        <span class="nav-icon">📜</span>
+                        <span class="nav-label">活动日志</span>
+                    </button>
+                    <button class="nav-item" data-view="backup">
+                        <span class="nav-icon">💾</span>
+                        <span class="nav-label">数据备份</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="admin-main">
+            <!-- 演示数据说明 -->
+            <div class="demo-data-notice">
+                <strong>📊 预览说明:</strong> 此页面展示的是演示数据，用于演示管理后台的功能和界面设计效果
+            </div>
+
+            <!-- 家庭概览视图 -->
+            <section id="dashboard" class="admin-view active">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🏠</span>
+                        家庭概览
+                    </h2>
+                    <p class="view-subtitle">欢迎回到温馨的KD之家管理中心</p>
+                </div>
+
+                <!-- 新功能展示标签 -->
+                <div id="features" style="scroll-margin-top: 100px;">
+                    <h3 style="color: var(--family-primary-600); margin-bottom: var(--space-friendly);">
+                        ✨ 全新功能特性
+                    </h3>
+                </div>
+
+                <!-- 快速统计卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card family-members feature-highlight">
+                        <div class="stat-icon">👨‍👩‍👧‍👦</div>
+                        <div class="stat-content">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">家庭成员</div>
+                            <div class="stat-trend">本月新增 <span class="trend-up">+2</span></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card tasks-completed feature-highlight">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-number">28</div>
+                            <div class="stat-label">本周完成任务</div>
+                            <div class="stat-trend">完成率 <span class="trend-up">85%</span></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card total-points feature-highlight">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <div class="stat-number">1250</div>
+                            <div class="stat-label">累计积分</div>
+                            <div class="stat-trend">本周 <span class="trend-up">+120</span></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card active-streaks feature-highlight">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">活跃连击</div>
+                            <div class="stat-trend">最高 <span class="trend-neutral">7天</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 功能展示区域 -->
+                <div class="dashboard-grid">
+                    <!-- 最近活动 -->
+                    <div class="dashboard-card recent-activities feature-highlight">
+                        <h3 class="card-title">
+                            <span class="title-icon">📋</span>
+                            最近活动
+                            <span class="new-badge">实时</span>
+                        </h3>
+                        <div class="activity-feed">
+                            <div class="activity-item">
+                                <div class="activity-icon">✅</div>
+                                <div class="activity-content">
+                                    <div class="activity-text">小明完成了"整理房间"任务</div>
+                                    <div class="activity-time">2小时前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">🏆</div>
+                                <div class="activity-content">
+                                    <div class="activity-text">小红获得了"连续完成任务"成就</div>
+                                    <div class="activity-time">4小时前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-content">
+                                    <div class="activity-text">新成员小李加入了家庭</div>
+                                    <div class="activity-time">1天前</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 家庭排行榜 -->
+                    <div class="dashboard-card family-leaderboard feature-highlight">
+                        <h3 class="card-title">
+                            <span class="title-icon">🏆</span>
+                            本周英雄榜
+                            <span class="new-badge">热门</span>
+                        </h3>
+                        <div class="leaderboard-mini">
+                            <div class="leaderboard-item">
+                                <div class="rank-number rank-1">1</div>
+                                <img src="/assets/default-avatar.svg" alt="小明" class="member-avatar">
+                                <div class="member-info">
+                                    <div class="member-name">小明</div>
+                                    <div class="member-points">180 积分</div>
+                                </div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="rank-number rank-2">2</div>
+                                <img src="/assets/default-avatar.svg" alt="小红" class="member-avatar">
+                                <div class="member-info">
+                                    <div class="member-name">小红</div>
+                                    <div class="member-points">165 积分</div>
+                                </div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="rank-number rank-3">3</div>
+                                <img src="/assets/default-avatar.svg" alt="爸爸" class="member-avatar">
+                                <div class="member-info">
+                                    <div class="member-name">爸爸</div>
+                                    <div class="member-points">145 积分</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快速操作 -->
+                    <div class="dashboard-card quick-actions feature-highlight">
+                        <h3 class="card-title">
+                            <span class="title-icon">⚡</span>
+                            快速操作
+                            <span class="new-badge">便捷</span>
+                        </h3>
+                        <div class="actions-grid">
+                            <button class="action-btn" onclick="showAlert('📝 任务创建功能预览', 'info')">
+                                <span class="action-icon">📝</span>
+                                <span class="action-label">创建任务</span>
+                            </button>
+                            <button class="action-btn" onclick="showAlert('👤 成员管理功能预览', 'info')">
+                                <span class="action-icon">👤</span>
+                                <span class="action-label">添加成员</span>
+                            </button>
+                            <button class="action-btn" onclick="showAlert('🏆 成就设计功能预览', 'info')">
+                                <span class="action-icon">🏆</span>
+                                <span class="action-label">设计成就</span>
+                            </button>
+                            <button class="action-btn" onclick="showAlert('📊 数据导出功能预览', 'success')">
+                                <span class="action-icon">📊</span>
+                                <span class="action-label">导出数据</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 系统状态 -->
+                    <div class="dashboard-card system-status">
+                        <h3 class="card-title">
+                            <span class="title-icon">💚</span>
+                            系统状态
+                        </h3>
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <span class="status-indicator online"></span>
+                                <span class="status-label">数据库</span>
+                                <span class="status-value">正常</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator online"></span>
+                                <span class="status-label">API服务</span>
+                                <span class="status-value">正常</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator warning"></span>
+                                <span class="status-label">存储空间</span>
+                                <span class="status-value">78%</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator online"></span>
+                                <span class="status-label">备份</span>
+                                <span class="status-value">已完成</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设计亮点说明 -->
+                <div style="margin-top: var(--space-gathering);">
+                    <div class="dashboard-card" style="background: var(--warm-gradient); color: white;">
+                        <h3 style="color: white; margin-bottom: var(--space-friendly);">
+                            🎨 设计亮点
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-friendly);">
+                            <div>
+                                <h4 style="color: white; margin-bottom: var(--space-cozy);">🏡 温馨主题</h4>
+                                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">
+                                    采用温暖的橙色系和自然绿色，营造家庭温馨氛围
+                                </p>
+                            </div>
+                            <div>
+                                <h4 style="color: white; margin-bottom: var(--space-cozy);">🎯 语义化色彩</h4>
+                                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">
+                                    任务状态、成就等级、角色权限都有专属色彩标识
+                                </p>
+                            </div>
+                            <div>
+                                <h4 style="color: white; margin-bottom: var(--space-cozy);">📱 响应式设计</h4>
+                                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">
+                                    完美适配桌面、平板和手机等各种设备
+                                </p>
+                            </div>
+                            <div>
+                                <h4 style="color: white; margin-bottom: var(--space-cozy);">✨ 现代交互</h4>
+                                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">
+                                    流畅的动画效果和直观的用户界面交互
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 其他视图的预览内容 -->
+            <section id="members" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">👨‍👩‍👧‍👦</span>
+                        家庭成员管理
+                    </h2>
+                    <p class="view-subtitle">管理家庭成员信息、角色和权限</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">👨‍👩‍👧‍👦</div>
+                    <h3>家庭成员管理</h3>
+                    <p>在这里可以管理所有家庭成员的信息、设置角色权限、查看活动状态。</p>
+                    <button class="btn-primary" onclick="showAlert('成员管理功能演示', 'info')">
+                        演示功能
+                    </button>
+                </div>
+            </section>
+
+            <section id="tasks" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📝</span>
+                        任务管理中心
+                    </h2>
+                    <p class="view-subtitle">创建、编辑和监控家庭任务</p>
+                </div>
+                
+                <!-- 任务统计预览 -->
+                <div class="task-stats">
+                    <div class="task-stat-item pending">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">待办任务</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-item progress">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-content">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">进行中</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-item completed">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-number">25</div>
+                            <div class="stat-label">已完成</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-item overdue">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-content">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">已逾期</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📝</div>
+                    <h3>任务管理中心</h3>
+                    <p>强大的任务管理功能，支持任务创建、分配、跟踪和完成验证。</p>
+                    <button class="btn-primary" onclick="showAlert('任务管理功能演示', 'info')">
+                        演示功能
+                    </button>
+                </div>
+            </section>
+
+            <!-- 其他视图占位符 -->
+            <section id="achievements" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🏆</span>
+                        成就系统
+                    </h2>
+                    <p class="view-subtitle">设计和管理家庭成就徽章</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🏆</div>
+                    <h3>成就系统</h3>
+                    <p>设计独特的家庭成就系统，激励每个成员积极参与家庭活动。</p>
+                </div>
+            </section>
+
+            <section id="analytics" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📊</span>
+                        数据分析
+                    </h2>
+                    <p class="view-subtitle">深入分析家庭活动数据</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📊</div>
+                    <h3>数据分析</h3>
+                    <p>全面的数据分析功能，帮助了解家庭活动趋势和成员表现。</p>
+                </div>
+            </section>
+
+            <section id="reports" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📋</span>
+                        报告中心
+                    </h2>
+                    <p class="view-subtitle">生成和查看各类家庭报告</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📋</div>
+                    <h3>报告中心</h3>
+                    <p>自动生成详细的家庭活动报告，包括周报、月报和年度总结。</p>
+                </div>
+            </section>
+
+            <section id="leaderboard" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🥇</span>
+                        排行榜管理
+                    </h2>
+                    <p class="view-subtitle">管理家庭积分排行榜</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🥇</div>
+                    <h3>排行榜管理</h3>
+                    <p>灵活的排行榜系统，可以设置不同的评比维度和奖励机制。</p>
+                </div>
+            </section>
+
+            <section id="settings" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🔧</span>
+                        系统配置
+                    </h2>
+                    <p class="view-subtitle">配置系统参数和偏好设置</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🔧</div>
+                    <h3>系统配置</h3>
+                    <p>全面的系统配置选项，让您可以根据家庭需求定制功能。</p>
+                </div>
+            </section>
+
+            <section id="logs" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📜</span>
+                        活动日志
+                    </h2>
+                    <p class="view-subtitle">查看系统和用户活动记录</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📜</div>
+                    <h3>活动日志</h3>
+                    <p>详细记录所有系统和用户操作，确保家庭数据的安全和可追溯性。</p>
+                </div>
+            </section>
+
+            <section id="backup" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">💾</span>
+                        数据备份
+                    </h2>
+                    <p class="view-subtitle">备份和恢复家庭数据</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">💾</div>
+                    <h3>数据备份</h3>
+                    <p>可靠的数据备份和恢复机制，保护您珍贵的家庭记录。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 脚本 -->
+    <script>
+        // 简化的预览脚本
+        
+        // 导航功能
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = btn.dataset.view;
+                if (view) {
+                    showView(view);
+                }
+            });
+        });
+        
+        function showView(viewName) {
+            // 隐藏所有视图
+            document.querySelectorAll('.admin-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // 移除所有导航项的活动状态
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // 显示目标视图
+            const targetView = document.getElementById(viewName);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+            
+            // 激活对应的导航项
+            const targetNav = document.querySelector(`[data-view="${viewName}"]`);
+            if (targetNav) {
+                targetNav.classList.add('active');
+            }
+        }
+        
+        // 通知功能
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            if (!container) return;
+            
+            const alert = document.createElement('div');
+            alert.className = `alert-modern alert-${type}`;
+            
+            alert.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; font-size: 1.2rem; cursor: pointer; 
+                                   color: inherit; opacity: 0.7; margin-left: 1rem;">×</button>
+                </div>
+            `;
+            
+            container.appendChild(alert);
+            
+            // 自动移除
+            setTimeout(() => {
+                if (alert.parentElement) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+        
+        // 初始化时显示欢迎消息
+        setTimeout(() => {
+            showAlert('🎉 欢迎体验KD之家全新的管理后台界面！', 'success');
+        }, 1000);
+        
+        // 功能展示
+        setTimeout(() => {
+            showAlert('💡 点击左侧导航可以查看不同功能模块', 'info');
+        }, 3000);
+    </script>
+</body>
+</html>

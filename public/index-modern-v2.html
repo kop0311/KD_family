@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KD之家 - 现代家务积分系统</title>
+    
+    <!-- 家庭主题设计系统 -->
+    <link rel="stylesheet" href="./styles/family-theme.css">
+    <link rel="stylesheet" href="./styles/modern-design-v2.css">
+    
+    <!-- Progressive Web App Meta Tags -->
+    <meta name="theme-color" content="#f97316">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="KD之家">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230ea5e9' stroke-width='2'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9,22 9,12 15,12 15,22'/></svg>">
+</head>
+<body>
+    <!-- Icon System -->
+    <div style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg">
+            <!-- Icons will be loaded here -->
+        </svg>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Modern Header -->
+        <header class="modern-header card">
+            <h1 class="brand-title">
+                <svg class="icon icon--xl" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                </svg>
+                KD之家
+            </h1>
+            <p class="brand-subtitle">现代化智能家务积分管理平台</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-modern">
+            <button class="nav-btn active" data-section="dashboard" id="dashboardBtn">
+                <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                </svg>
+                仪表盘
+            </button>
+            <button class="nav-btn" data-section="tasks" id="tasksBtn">
+                <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4"/>
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.39 0 4.68.94 6.36 2.64"/>
+                </svg>
+                任务管理
+            </button>
+            <button class="nav-btn" data-section="leaderboard" id="leaderboardBtn">
+                <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                    <path d="M4 22h16"/>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                </svg>
+                排行榜
+            </button>
+            <button class="nav-btn" data-section="profile" id="profileBtn">
+                <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                个人中心
+            </button>
+            <button class="nav-btn" data-section="admin" id="adminBtn" style="display: none;">
+                <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                管理员
+            </button>
+        </nav>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- User Info Card -->
+        <div id="userInfo" class="user-card-modern" style="display: none;">
+            <div class="flex items-center gap-4">
+                <img id="userAvatar" class="user-avatar" src="" alt="用户头像">
+                <div class="flex-1">
+                    <h3 class="user-name" id="userName"></h3>
+                    <span class="user-role" id="userRole"></span>
+                    <div class="mt-2 flex items-center gap-4">
+                        <div>
+                            <span class="text-sm text-secondary">总积分</span>
+                            <span class="text-xl font-bold text-primary ml-2" id="userPoints">0</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-modern btn-outline" id="logoutBtn">
+                    <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16,17 21,12 16,7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    退出登录
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="modern-section active">
+            <h2 class="section-title">
+                <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <line x1="12" y1="20" x2="12" y2="10"/>
+                    <line x1="18" y1="20" x2="18" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="16"/>
+                </svg>
+                个人仪表盘
+            </h2>
+            
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
+                            <polyline points="17,6 23,6 23,12"/>
+                        </svg>
+                    </div>
+                    <div class="stat-value" id="weeklyPoints">128</div>
+                    <div class="stat-label">本周积分</div>
+                    <div class="stat-change stat-change--positive">+15%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="6"/>
+                            <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+                        </svg>
+                    </div>
+                    <div class="stat-value" id="totalTasks">42</div>
+                    <div class="stat-label">完成任务</div>
+                    <div class="stat-change stat-change--positive">+8 本周</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-value" id="completionRate">85%</div>
+                    <div class="stat-label">完成率</div>
+                    <div class="stat-change stat-change--positive">+5%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                    </div>
+                    <div class="stat-value" id="currentRank">#3</div>
+                    <div class="stat-label">当前排名</div>
+                    <div class="stat-change stat-change--positive">↑1</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;" class="charts-grid">
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path d="M3 3v18h18"/>
+                            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                        </svg>
+                        积分趋势
+                    </h3>
+                    <div style="height: 200px; background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--neutral-600);">
+                        图表区域 (可集成 Chart.js 或其他图表库)
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M8 12l2 2 4-4"/>
+                        </svg>
+                        任务分布
+                    </h3>
+                    <div style="height: 200px; background: linear-gradient(135deg, var(--success-50) 0%, var(--warning-50) 100%); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--neutral-600);">
+                        环形图表区域 (任务类型分布)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card p-6 mb-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v6m0 6v6m11-7h-6M7 12H1"/>
+                    </svg>
+                    快速操作
+                </h3>
+                <div class="flex gap-4 flex-wrap">
+                    <button class="btn-modern btn-primary">
+                        <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        创建任务
+                    </button>
+                    <button class="btn-modern btn-secondary">
+                        <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <polyline points="20,6 9,17 4,12"/>
+                        </svg>
+                        完成任务
+                    </button>
+                    <button class="btn-modern btn-outline">
+                        <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                        查看历史
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    最近活动
+                </h3>
+                <div class="space-y-4" id="recentActivity">
+                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="font-medium">完成了"整理客厅"任务</p>
+                            <p class="text-sm text-muted">获得 15 积分 • 2小时前</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="font-medium">认领了"洗碗"任务</p>
+                            <p class="text-sm text-muted">预期 10 积分 • 3小时前</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="font-medium">达成了"本周完成5个任务"成就</p>
+                            <p class="text-sm text-muted">获得 25 积分 • 1天前</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task Management Section -->
+        <section id="tasks" class="modern-section">
+            <h2 class="section-title">
+                <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4"/>
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.39 0 4.68.94 6.36 2.64"/>
+                </svg>
+                任务管理
+            </h2>
+            <div class="card p-6">
+                <p class="text-muted">任务管理功能正在开发中...</p>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard" class="modern-section">
+            <h2 class="section-title">
+                <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                    <path d="M4 22h16"/>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                </svg>
+                家庭排行榜
+            </h2>
+            <div class="card p-6">
+                <p class="text-muted">排行榜功能正在开发中...</p>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="modern-section">
+            <h2 class="section-title">
+                <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                个人中心
+            </h2>
+            <div class="card p-6">
+                <p class="text-muted">个人中心功能正在开发中...</p>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="modern-section">
+            <h2 class="section-title">
+                <svg class="icon icon--lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                管理中心
+            </h2>
+            <div class="card p-6">
+                <p class="text-muted">管理中心功能正在开发中...</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="./modern-app.js"></script>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏡 KD之家 - 温馨管理后台</title>
+    
+    <!-- 家庭主题设计系统 -->
+    <link rel="stylesheet" href="styles/family-theme.css">
+    <link rel="stylesheet" href="styles/admin-enhanced.css">
+    
+    <!-- 字体引入 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA设置 -->
+    <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f97316'><path d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/></svg>">
+</head>
+<body class="family-theme">
+    <!-- 加载遮罩 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-house">🏡</div>
+            <p class="loading-text">正在加载温馨的家...</p>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div id="alertContainer" class="alert-container"></div>
+
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-brand">
+                <div class="brand-icon">🏡</div>
+                <div class="brand-info">
+                    <h1 class="brand-title">KD之家</h1>
+                    <span class="brand-subtitle">温馨管理后台</span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="user-profile">
+                    <img id="adminAvatar" src="/assets/default-avatar.svg" alt="管理员" class="user-avatar">
+                    <div class="user-info">
+                        <span id="adminName" class="user-name">管理员</span>
+                        <span class="user-role">🔧 系统管理员</span>
+                    </div>
+                </div>
+                <button class="btn-secondary" id="backToHomeBtn">
+                    🏠 回到首页
+                </button>
+                <button class="btn-danger" id="logoutBtn">
+                    👋 安全退出
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要布局 -->
+    <div class="admin-layout">
+        <!-- 侧边导航 -->
+        <aside class="admin-sidebar">
+            <nav class="sidebar-nav">
+                <!-- 主要功能 -->
+                <div class="nav-group">
+                    <h3 class="nav-group-title">🏠 家庭管理</h3>
+                    <button class="nav-item active" data-view="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-label">家庭概览</span>
+                    </button>
+                    <button class="nav-item" data-view="members">
+                        <span class="nav-icon">👨‍👩‍👧‍👦</span>
+                        <span class="nav-label">家庭成员</span>
+                    </button>
+                    <button class="nav-item" data-view="tasks">
+                        <span class="nav-icon">📝</span>
+                        <span class="nav-label">任务管理</span>
+                    </button>
+                    <button class="nav-item" data-view="achievements">
+                        <span class="nav-icon">🏆</span>
+                        <span class="nav-label">成就系统</span>
+                    </button>
+                </div>
+
+                <!-- 数据分析 -->
+                <div class="nav-group">
+                    <h3 class="nav-group-title">📈 数据洞察</h3>
+                    <button class="nav-item" data-view="analytics">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-label">数据分析</span>
+                    </button>
+                    <button class="nav-item" data-view="reports">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-label">报告中心</span>
+                    </button>
+                    <button class="nav-item" data-view="leaderboard">
+                        <span class="nav-icon">🥇</span>
+                        <span class="nav-label">排行榜</span>
+                    </button>
+                </div>
+
+                <!-- 系统设置 -->
+                <div class="nav-group">
+                    <h3 class="nav-group-title">⚙️ 系统设置</h3>
+                    <button class="nav-item" data-view="settings">
+                        <span class="nav-icon">🔧</span>
+                        <span class="nav-label">系统配置</span>
+                    </button>
+                    <button class="nav-item" data-view="logs">
+                        <span class="nav-icon">📜</span>
+                        <span class="nav-label">活动日志</span>
+                    </button>
+                    <button class="nav-item" data-view="backup">
+                        <span class="nav-icon">💾</span>
+                        <span class="nav-label">数据备份</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="admin-main">
+            <!-- 家庭概览视图 -->
+            <section id="dashboard" class="admin-view active">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🏠</span>
+                        家庭概览
+                    </h2>
+                    <p class="view-subtitle">欢迎回到温馨的KD之家管理中心</p>
+                </div>
+
+                <!-- 快速统计卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card family-members">
+                        <div class="stat-icon">👨‍👩‍👧‍👦</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalMembers">-</div>
+                            <div class="stat-label">家庭成员</div>
+                            <div class="stat-trend">本月新增 <span class="trend-up">+2</span></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card tasks-completed">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="completedTasks">-</div>
+                            <div class="stat-label">本周完成任务</div>
+                            <div class="stat-trend">完成率 <span class="trend-up">85%</span></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card total-points">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalPoints">-</div>
+                            <div class="stat-label">累计积分</div>
+                            <div class="stat-trend">本周 <span class="trend-up">+120</span></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card active-streaks">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="activeStreaks">-</div>
+                            <div class="stat-label">活跃连击</div>
+                            <div class="stat-trend">最高 <span class="trend-neutral">7天</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近活动和快速操作 -->
+                <div class="dashboard-grid">
+                    <!-- 最近活动 -->
+                    <div class="dashboard-card recent-activities">
+                        <h3 class="card-title">
+                            <span class="title-icon">📋</span>
+                            最近活动
+                        </h3>
+                        <div id="recentActivities" class="activity-feed">
+                            <!-- 活动将通过JS加载 -->
+                        </div>
+                    </div>
+
+                    <!-- 家庭排行榜 -->
+                    <div class="dashboard-card family-leaderboard">
+                        <h3 class="card-title">
+                            <span class="title-icon">🏆</span>
+                            本周英雄榜
+                        </h3>
+                        <div id="weeklyLeaderboard" class="leaderboard-mini">
+                            <!-- 排行榜将通过JS加载 -->
+                        </div>
+                    </div>
+
+                    <!-- 快速操作 -->
+                    <div class="dashboard-card quick-actions">
+                        <h3 class="card-title">
+                            <span class="title-icon">⚡</span>
+                            快速操作
+                        </h3>
+                        <div class="actions-grid">
+                            <button class="action-btn" onclick="showView('tasks')">
+                                <span class="action-icon">📝</span>
+                                <span class="action-label">创建任务</span>
+                            </button>
+                            <button class="action-btn" onclick="showView('members')">
+                                <span class="action-icon">👤</span>
+                                <span class="action-label">添加成员</span>
+                            </button>
+                            <button class="action-btn" onclick="showView('achievements')">
+                                <span class="action-icon">🏆</span>
+                                <span class="action-label">设计成就</span>
+                            </button>
+                            <button class="action-btn" onclick="exportFamilyData()">
+                                <span class="action-icon">📊</span>
+                                <span class="action-label">导出数据</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 系统状态 -->
+                    <div class="dashboard-card system-status">
+                        <h3 class="card-title">
+                            <span class="title-icon">💚</span>
+                            系统状态
+                        </h3>
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <span class="status-indicator online"></span>
+                                <span class="status-label">数据库</span>
+                                <span class="status-value">正常</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator online"></span>
+                                <span class="status-label">API服务</span>
+                                <span class="status-value">正常</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator warning"></span>
+                                <span class="status-label">存储空间</span>
+                                <span class="status-value">78%</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator online"></span>
+                                <span class="status-label">备份</span>
+                                <span class="status-value">已完成</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 家庭成员管理视图 -->
+            <section id="members" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">👨‍👩‍👧‍👦</span>
+                        家庭成员管理
+                    </h2>
+                    <p class="view-subtitle">管理家庭成员信息、角色和权限</p>
+                </div>
+
+                <!-- 成员管理工具栏 -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn-primary" id="addMemberBtn">
+                            <span class="btn-icon">👤</span>
+                            添加成员
+                        </button>
+                        <button class="btn-secondary" id="inviteMemberBtn">
+                            <span class="btn-icon">📧</span>
+                            邀请加入
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <select class="form-select" id="roleFilter">
+                            <option value="">所有角色</option>
+                            <option value="advisor">家庭顾问</option>
+                            <option value="parent">家长</option>
+                            <option value="member">成员</option>
+                        </select>
+                        <input type="text" class="form-input" id="memberSearch" placeholder="搜索成员...">
+                    </div>
+                </div>
+
+                <!-- 成员列表 -->
+                <div class="data-table-container">
+                    <table class="data-table" id="membersTable">
+                        <thead>
+                            <tr>
+                                <th>头像</th>
+                                <th>姓名</th>
+                                <th>角色</th>
+                                <th>积分</th>
+                                <th>加入时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersTableBody">
+                            <!-- 成员数据将通过JS加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 任务管理视图 -->
+            <section id="tasks" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📝</span>
+                        任务管理中心
+                    </h2>
+                    <p class="view-subtitle">创建、编辑和监控家庭任务</p>
+                </div>
+
+                <!-- 任务统计概览 -->
+                <div class="task-stats">
+                    <div class="task-stat-item pending">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="pendingTasks">-</div>
+                            <div class="stat-label">待办任务</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-item progress">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="progressTasks">-</div>
+                            <div class="stat-label">进行中</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-item completed">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="completedTasksCount">-</div>
+                            <div class="stat-label">已完成</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-item overdue">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="overdueTasks">-</div>
+                            <div class="stat-label">已逾期</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 任务管理工具 -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn-primary" id="createTaskBtn">
+                            <span class="btn-icon">📝</span>
+                            创建任务
+                        </button>
+                        <button class="btn-secondary" id="templateTaskBtn">
+                            <span class="btn-icon">📋</span>
+                            模板任务
+                        </button>
+                        <button class="btn-outline" id="bulkOperationsBtn">
+                            <span class="btn-icon">⚡</span>
+                            批量操作
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <select class="form-select" id="taskStatusFilter">
+                            <option value="">所有状态</option>
+                            <option value="pending">待办</option>
+                            <option value="in_progress">进行中</option>
+                            <option value="completed">已完成</option>
+                            <option value="overdue">已逾期</option>
+                        </select>
+                        <select class="form-select" id="taskAssigneeFilter">
+                            <option value="">所有成员</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 任务列表 -->
+                <div id="tasksContainer" class="tasks-container">
+                    <!-- 任务卡片将通过JS加载 -->
+                </div>
+            </section>
+
+            <!-- 成就系统视图 -->
+            <section id="achievements" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🏆</span>
+                        成就系统
+                    </h2>
+                    <p class="view-subtitle">设计和管理家庭成就徽章</p>
+                </div>
+
+                <!-- 成就管理内容 -->
+                <div id="achievementsContent">
+                    <!-- 成就管理界面将通过JS加载 -->
+                </div>
+            </section>
+
+            <!-- 其他视图占位符 -->
+            <section id="analytics" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📊</span>
+                        数据分析
+                    </h2>
+                    <p class="view-subtitle">深入分析家庭活动数据</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📊</div>
+                    <h3>数据分析功能</h3>
+                    <p>即将推出强大的数据分析功能，帮助您更好地了解家庭活动情况。</p>
+                </div>
+            </section>
+
+            <section id="reports" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📋</span>
+                        报告中心
+                    </h2>
+                    <p class="view-subtitle">生成和查看各类家庭报告</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📋</div>
+                    <h3>报告中心</h3>
+                    <p>自动生成周报、月报，帮助家庭总结和规划。</p>
+                </div>
+            </section>
+
+            <section id="leaderboard" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🥇</span>
+                        排行榜管理
+                    </h2>
+                    <p class="view-subtitle">管理家庭积分排行榜</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🥇</div>
+                    <h3>排行榜管理</h3>
+                    <p>配置排行榜规则，设置奖励机制。</p>
+                </div>
+            </section>
+
+            <section id="settings" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">🔧</span>
+                        系统配置
+                    </h2>
+                    <p class="view-subtitle">配置系统参数和偏好设置</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🔧</div>
+                    <h3>系统配置</h3>
+                    <p>自定义家庭规则、积分制度和通知设置。</p>
+                </div>
+            </section>
+
+            <section id="logs" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">📜</span>
+                        活动日志
+                    </h2>
+                    <p class="view-subtitle">查看系统和用户活动记录</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📜</div>
+                    <h3>活动日志</h3>
+                    <p>记录所有重要的系统和用户操作。</p>
+                </div>
+            </section>
+
+            <section id="backup" class="admin-view">
+                <div class="view-header">
+                    <h2 class="view-title">
+                        <span class="title-icon">💾</span>
+                        数据备份
+                    </h2>
+                    <p class="view-subtitle">备份和恢复家庭数据</p>
+                </div>
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">💾</div>
+                    <h3>数据备份</h3>
+                    <p>定期备份重要数据，确保家庭记录安全。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 模态框容器 -->
+    <div id="modalContainer"></div>
+
+    <!-- 脚本 -->
+    <script src="admin-enhanced.js"></script>
+</body>
+</html>

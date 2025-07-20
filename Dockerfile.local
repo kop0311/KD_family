@@ -1,0 +1,134 @@
+# KD Family - 本地开发环境 Dockerfile
+# 多阶段构建: 开发环境
+FROM node:18-alpine as development
+
+# 设置维护者信息
+LABEL maintainer="KD Family Team"
+LABEL version="1.0.0"
+LABEL description="KD Family 家务积分系统 - 本地开发环境"
+
+# 安装系统依赖
+RUN apk add --no-cache \
+    # 开发工具
+    git \
+    curl \
+    bash \
+    # 构建依赖
+    python3 \
+    make \
+    g++ \
+    # SQLite支持
+    sqlite \
+    sqlite-dev \
+    # 图像处理依赖（为sharp提供）
+    vips-dev \
+    imagemagick \
+    libc6-compat \
+    # 网络工具
+    netcat-openbsd \
+    # 清理缓存
+    && rm -rf /var/cache/apk/*
+
+# 设置工作目录
+WORKDIR /app
+
+# 配置npm镜像源（加速安装）
+RUN npm config set registry https://registry.npmmirror.com
+
+# 创建非root用户
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S kdfamily -u 1001 -G nodejs
+
+# 复制package文件（利用缓存层）
+COPY --chown=kdfamily:nodejs package*.json ./
+
+# 安装依赖
+RUN npm ci --include=dev && \
+    npm cache clean --force
+
+# 全局安装开发工具
+RUN npm install -g \
+    nodemon \
+    pm2 \
+    concurrently
+
+# 复制应用代码
+COPY --chown=kdfamily:nodejs . .
+
+# 创建必要的目录
+RUN mkdir -p \
+    uploads/avatars \
+    uploads/medals \
+    logs \
+    temp \
+    data \
+    coverage && \
+    chown -R kdfamily:nodejs /app
+
+# 设置环境变量
+ENV NODE_ENV=development
+ENV DEBUG=kdfamily:*
+ENV PORT=3000
+
+# 切换到非root用户
+USER kdfamily
+
+# 暴露端口
+EXPOSE 3000 9229 35729
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# 启动脚本
+COPY --chown=kdfamily:nodejs docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# 默认命令
+CMD ["/usr/local/bin/entrypoint.sh"]
+
+# ===== 生产环境构建阶段 =====
+FROM node:18-alpine as production
+
+LABEL maintainer="KD Family Team"
+LABEL version="1.0.0"
+LABEL description="KD Family 家务积分系统 - 生产环境"
+
+# 安装运行时依赖
+RUN apk add --no-cache \
+    curl \
+    sqlite \
+    imagemagick \
+    && rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# 创建非root用户
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S kdfamily -u 1001 -G nodejs
+
+# 复制package文件
+COPY --chown=kdfamily:nodejs package*.json ./
+
+# 仅安装生产依赖
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# 复制应用代码
+COPY --chown=kdfamily:nodejs . .
+
+# 创建目录
+RUN mkdir -p uploads logs data && \
+    chown -R kdfamily:nodejs /app
+
+# 设置环境变量
+ENV NODE_ENV=production
+ENV PORT=3000
+
+USER kdfamily
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+CMD ["npm", "start"]

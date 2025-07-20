@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎来到 KD之家</title>
+    
+    <!-- Modern Design System -->
+    <link rel="stylesheet" href="./styles/modern-design.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+    
+    <style>
+        .welcome-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .welcome-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        
+        .ui-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .ui-option {
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ui-option:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .ui-option-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ui-option-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--gray-800);
+        }
+        
+        .ui-option-desc {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        .modern-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .features {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .features-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+        
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            text-align: left;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .ui-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-card">
+            <h1 class="welcome-title">🏠 KD之家</h1>
+            <p class="welcome-subtitle">现代化家务积分管理系统</p>
+            
+            <div class="ui-options">
+                <a href="./index.html" class="ui-option">
+                    <div class="ui-option-icon">📋</div>
+                    <h3 class="ui-option-title">经典界面</h3>
+                    <p class="ui-option-desc">简洁实用的传统界面，功能齐全，加载快速</p>
+                </a>
+                
+                <a href="./index-modern.html" class="ui-option">
+                    <div class="modern-badge">推荐</div>
+                    <div class="ui-option-icon">✨</div>
+                    <h3 class="ui-option-title">现代界面</h3>
+                    <p class="ui-option-desc">全新设计的现代化界面，美观流畅，用户体验佳</p>
+                </a>
+            </div>
+            
+            <div class="features">
+                <h3 class="features-title">✨ 系统特色</h3>
+                <div class="features-list">
+                    <div class="feature">
+                        <span>🎯</span>
+                        <span>任务管理系统</span>
+                    </div>
+                    <div class="feature">
+                        <span>💰</span>
+                        <span>积分奖励机制</span>
+                    </div>
+                    <div class="feature">
+                        <span>🏆</span>
+                        <span>家庭排行榜</span>
+                    </div>
+                    <div class="feature">
+                        <span>👤</span>
+                        <span>个人资料管理</span>
+                    </div>
+                    <div class="feature">
+                        <span>🎨</span>
+                        <span>头像自定义</span>
+                    </div>
+                    <div class="feature">
+                        <span>⚙️</span>
+                        <span>管理员面板</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Add animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.welcome-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

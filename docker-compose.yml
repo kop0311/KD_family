@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: kdfamily_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./schema:/docker-entrypoint-initdb.d
+    networks:
+      - kdfamily_network
+    restart: unless-stopped
+
+  # phpMyAdmin数据库管理界面
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: kdfamily_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - kdfamily_network
+    restart: unless-stopped
+
+  # Adminer数据库管理界面（轻量级替代）
+  adminer:
+    image: adminer:latest
+    container_name: kdfamily_adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+    networks:
+      - kdfamily_network
+    restart: unless-stopped
+
+  # 应用程序（可选）
+  app:
+    build: .
+    container_name: kd_family
+    env_file:
+      - .env
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - kdfamily_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  kdfamily_network:
+    driver: bridge

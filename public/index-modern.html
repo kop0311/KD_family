@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KD之家 - 现代家务积分系统</title>
+    
+    <!-- 家庭主题设计系统 -->
+    <link rel="stylesheet" href="./styles/family-theme.css">
+    <link rel="stylesheet" href="./styles/modern-design.css">
+    
+    <!-- Progressive Web App Meta Tags -->
+    <meta name="theme-color" content="#f97316">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="KD之家">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="./assets/logo.svg">
+    <link rel="apple-touch-icon" href="./assets/logo.svg">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Modern Header -->
+        <header class="modern-header glass-container">
+            <div class="brand-container">
+                <img src="./assets/logo.svg" alt="KD之家" class="brand-logo">
+                <div class="brand-content">
+                    <h1 class="brand-title">KD之家</h1>
+                    <p class="brand-subtitle">现代化家务积分管理系统</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-modern">
+            <button class="nav-btn active" data-section="dashboard" id="dashboardBtn">
+                🏡 仪表盘
+            </button>
+            <button class="nav-btn" data-section="tasks" id="tasksBtn">
+                📋 任务管理
+            </button>
+            <button class="nav-btn" data-section="leaderboard" id="leaderboardBtn">
+                🏆 排行榜
+            </button>
+            <button class="nav-btn" data-section="achievements" id="achievementsBtn">
+                🏆 成就墙
+            </button>
+            <button class="nav-btn" data-section="profile" id="profileBtn">
+                👤 个人中心
+            </button>
+            <button class="nav-btn" data-section="admin" id="adminBtn" style="display: none;">
+                ⚙️ 管理员
+            </button>
+        </nav>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- User Info Card -->
+        <div id="userInfo" class="user-card-modern" style="display: none;">
+            <div class="flex items-center gap-4">
+                <img id="userAvatar" class="user-avatar" src="" alt="用户头像">
+                <div>
+                    <h3 class="user-name" id="userName"></h3>
+                    <span class="user-role" id="userRole"></span>
+                    <div class="mt-2">
+                        <span class="text-sm text-gray-600">总积分: </span>
+                        <span class="font-bold text-lg" id="userPoints">0</span>
+                    </div>
+                </div>
+                <div class="ml-auto">
+                    <button class="btn-outline btn-modern" id="logoutBtn">
+                        🚪 退出登录
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="modern-section active">
+            <h2 class="section-title">📊 个人仪表盘</h2>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-auto gap-6 mb-6">
+                <div class="glass-container p-6 text-center">
+                    <div class="emoji-icon text-2xl mb-2" style="font-size: 2.5rem;">📈</div>
+                    <h3 class="text-lg font-semibold mb-2">本周积分</h3>
+                    <p class="text-2xl font-bold" style="font-size: 2rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="weekPoints">150</p>
+                </div>
+                <div class="glass-container p-6 text-center">
+                    <div class="emoji-icon text-2xl mb-2" style="font-size: 2.5rem;">✅</div>
+                    <h3 class="text-lg font-semibold mb-2">已完成任务</h3>
+                    <p class="text-2xl font-bold" style="font-size: 2rem; background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="completedTasks">12</p>
+                </div>
+                <div class="glass-container p-6 text-center">
+                    <div class="emoji-icon text-2xl mb-2" style="font-size: 2.5rem;">🔥</div>
+                    <h3 class="text-lg font-semibold mb-2">连续天数</h3>
+                    <p class="text-2xl font-bold" style="font-size: 2rem; background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="streakDays">7</p>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="glass-container p-6">
+                <h3 class="text-xl font-semibold mb-6 text-gray-800">📝 最近活动</h3>
+                <div id="recentActivities">
+                    <div class="flex items-center gap-3 p-3 mb-2 bg-gray-50 rounded-lg">
+                        <span class="emoji-icon" style="font-size: 1.5rem;">✅</span>
+                        <div>
+                            <p class="font-semibold">完成了"整理客厅"任务</p>
+                            <p class="text-sm text-gray-600">2小时前 · +20积分</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 mb-2 bg-gray-50 rounded-lg">
+                        <span class="emoji-icon" style="font-size: 1.5rem;">🎉</span>
+                        <div>
+                            <p class="font-semibold">获得"家务小能手"成就</p>
+                            <p class="text-sm text-gray-600">1天前 · +50积分</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section id="tasks" class="modern-section">
+            <h2 class="section-title">📋 任务管理</h2>
+            
+            <!-- Task Controls -->
+            <div class="flex gap-4 mb-6 flex-wrap">
+                <button class="btn-primary btn-modern" id="createTaskBtn" style="display: none;">
+                    ➕ 创建任务
+                </button>
+                <button class="btn-secondary btn-modern" id="refreshTasksBtn">
+                    🔄 刷新任务
+                </button>
+                <select id="taskFilter" class="form-input-modern" style="max-width: 200px;">
+                    <option value="">全部任务</option>
+                    <option value="pending">待认领</option>
+                    <option value="claimed">已认领</option>
+                    <option value="in_progress">进行中</option>
+                    <option value="completed">已完成</option>
+                    <option value="approved">已批准</option>
+                </select>
+            </div>
+
+            <!-- Create Task Form -->
+            <div id="createTaskForm" class="glass-container" style="padding: 2rem; margin-bottom: 2rem; display: none;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">📝 创建新任务</h3>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">任务标题</label>
+                        <input type="text" id="taskTitle" class="form-input-modern" placeholder="输入任务标题">
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">任务类型</label>
+                        <select id="taskType" class="form-input-modern">
+                            <option value="PM">个人维护 (PM)</option>
+                            <option value="FTL">家庭服务 (FTL)</option>
+                            <option value="PA">公共区域 (PA)</option>
+                            <option value="UBI">基础福利 (UBI)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group-modern">
+                    <label class="form-label-modern">任务描述</label>
+                    <textarea id="taskDescription" class="form-input-modern" rows="3" placeholder="详细描述任务内容"></textarea>
+                </div>
+                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">积分</label>
+                        <input type="number" id="taskPoints" class="form-input-modern" value="10">
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">分配给</label>
+                        <select id="taskAssignee" class="form-input-modern">
+                            <option value="">无指定</option>
+                        </select>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">截止日期</label>
+                        <input type="date" id="taskDueDate" class="form-input-modern">
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button class="btn-primary btn-modern" id="submitTaskBtn">✅ 创建任务</button>
+                    <button class="btn-outline btn-modern" id="cancelTaskBtn">❌ 取消</button>
+                </div>
+            </div>
+
+            <!-- Tasks List -->
+            <div id="tasksList"></div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard" class="modern-section">
+            <h2 class="section-title">🏆 家庭排行榜</h2>
+            
+            <!-- Leaderboard Filters -->
+            <div class="flex gap-4 mb-6 flex-wrap">
+                <button class="btn-primary btn-modern leaderboard-btn" data-period="week">📅 本周</button>
+                <button class="btn-secondary btn-modern leaderboard-btn" data-period="month">📆 本月</button>
+                <button class="btn-outline btn-modern leaderboard-btn" data-period="all">📊 总榜</button>
+            </div>
+
+            <!-- Leaderboard List -->
+            <div id="leaderboardList" class="leaderboard-modern"></div>
+        </section>
+
+        <!-- Achievement Wall Section -->
+        <section id="achievements" class="modern-section">
+            <h2 class="section-title">🏆 成就墙</h2>
+
+            <!-- Upload Achievement -->
+            <div class="glass-container" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">📸 分享新成就</h3>
+
+                <!-- Drag and Drop Upload Area -->
+                <div id="achievementDropZone" class="achievement-drop-zone">
+                    <div class="drop-zone-content">
+                        <div class="drop-zone-icon">📷</div>
+                        <h4>拖拽图片到这里或点击上传</h4>
+                        <p>支持 JPG, PNG, GIF 格式，最大 10MB</p>
+                        <button class="btn-primary btn-modern" id="selectImageBtn">选择图片</button>
+                    </div>
+                    <input type="file" id="achievementImageInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- Achievement Form -->
+                <div id="achievementForm" style="display: none; margin-top: 1.5rem;">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern">成就标题</label>
+                            <input type="text" id="achievementTitle" class="form-input-modern" placeholder="输入成就标题">
+                        </div>
+                        <div>
+                            <label class="form-label-modern">获得积分</label>
+                            <input type="number" id="achievementPoints" class="form-input-modern" value="0" min="0">
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <label class="form-label-modern">成就描述</label>
+                        <textarea id="achievementDescription" class="form-input-modern" rows="3" placeholder="描述这个成就..."></textarea>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div id="achievementPreview" style="margin-top: 1rem; text-align: center;">
+                        <img id="previewImage" style="max-width: 300px; max-height: 200px; border-radius: var(--radius-lg); border: 2px solid var(--gray-200);">
+                    </div>
+
+                    <div class="flex gap-3" style="margin-top: 1.5rem;">
+                        <button class="btn-primary btn-modern" id="uploadAchievementBtn">🚀 发布成就</button>
+                        <button class="btn-outline btn-modern" id="cancelAchievementBtn">❌ 取消</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter and Controls -->
+            <div class="glass-container" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <div class="flex gap-4 items-center flex-wrap">
+                    <select id="achievementFilter" class="form-input-modern" style="max-width: 200px;">
+                        <option value="">全部成就</option>
+                        <option value="my">我的成就</option>
+                        <option value="family">家庭成就</option>
+                    </select>
+                    <button class="btn-secondary btn-modern" id="refreshAchievementsBtn">🔄 刷新</button>
+                </div>
+            </div>
+
+            <!-- Achievement Gallery -->
+            <div id="achievementGallery" class="achievement-gallery-modern"></div>
+
+            <!-- Load More Button -->
+            <div class="text-center" style="margin-top: 2rem;">
+                <button class="btn-outline btn-modern" id="loadMoreAchievementsBtn" style="display: none;">加载更多</button>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="modern-section">
+            <h2 class="section-title">👤 个人中心</h2>
+            
+            <!-- Profile Form -->
+            <div class="glass-container" style="padding: 2rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">📝 个人信息</h3>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">用户名</label>
+                        <input type="text" id="profileUsername" class="form-input-modern" readonly>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">全名</label>
+                        <input type="text" id="profileFullName" class="form-input-modern">
+                    </div>
+                </div>
+                <div class="form-group-modern">
+                    <label class="form-label-modern">邮箱</label>
+                    <input type="email" id="profileEmail" class="form-input-modern">
+                </div>
+                
+                <!-- Avatar Section -->
+                <div class="form-group-modern">
+                    <label class="form-label-modern">头像设置</label>
+                    <div class="flex items-center gap-4">
+                        <img id="currentAvatar" class="user-avatar" src="" alt="当前头像" style="width: 80px; height: 80px;">
+                        <button class="btn-secondary btn-modern" id="changeAvatarBtn">
+                            🎨 更换头像
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Password Change -->
+                <div class="glass-container" style="padding: 1.5rem; margin: 1.5rem 0; background: rgba(249, 250, 251, 0.8);">
+                    <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem;">🔒 修改密码</h4>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">当前密码</label>
+                            <input type="password" id="currentPassword" class="form-input-modern">
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">新密码</label>
+                            <input type="password" id="newPassword" class="form-input-modern">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button class="btn-primary btn-modern" id="saveProfileBtn">💾 保存更改</button>
+                    <button class="btn-outline btn-modern" id="resetProfileBtn">🔄 重置</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="modern-section">
+            <h2 class="section-title">⚙️ 管理员面板</h2>
+            
+            <!-- Admin Controls -->
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div class="glass-container" style="padding: 2rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">👥 用户管理</h3>
+                    <button class="btn-primary btn-modern mb-4" id="loadUsersBtn">📋 查看所有用户</button>
+                    <button class="btn-secondary btn-modern mb-4" id="createUserBtn">➕ 创建用户</button>
+                    <button class="btn-outline btn-modern" id="manageRolesBtn">🎭 角色管理</button>
+                </div>
+
+                <div class="glass-container" style="padding: 2rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">👨‍👩‍👧‍👦 家庭组管理</h3>
+                    <button class="btn-primary btn-modern mb-4" id="loadGroupsBtn">📋 查看所有组</button>
+                    <button class="btn-secondary btn-modern mb-4" id="createGroupBtn">➕ 创建组</button>
+                    <button class="btn-outline btn-modern" id="groupStatsBtn">📊 组统计</button>
+                </div>
+
+                <div class="glass-container" style="padding: 2rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">🛠️ 任务类型管理</h3>
+                    <button class="btn-primary btn-modern mb-4" id="loadTaskTypesBtn">📋 查看任务类型</button>
+                    <button class="btn-secondary btn-modern mb-4" id="createTaskTypeBtn">➕ 创建类型</button>
+                    <button class="btn-outline btn-modern" id="taskTemplatesBtn">📝 任务模板</button>
+                </div>
+
+                <div class="glass-container" style="padding: 2rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">📊 系统统计</h3>
+                    <button class="btn-primary btn-modern mb-4" id="loadStatsBtn">📈 查看统计</button>
+                    <button class="btn-warning btn-modern" id="exportDataBtn">💾 导出数据</button>
+                </div>
+            </div>
+            
+            <!-- Admin Content Area -->
+            <div id="adminContent" class="mt-8"></div>
+        </section>
+    </div>
+
+    <!-- Modern Avatar Modal -->
+    <div id="avatarModal" class="modal-modern">
+        <div class="modal-content-modern" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">🎨 选择头像</h3>
+                <button class="close-modern" id="closeAvatarModalBtn">✕</button>
+            </div>
+            
+            <!-- Avatar Gallery -->
+            <div id="avatarGallery" class="avatar-gallery-modern"></div>
+
+
+            
+            <!-- Upload Section -->
+            <div class="glass-container" style="padding: 1.5rem; margin: 1.5rem 0; background: rgba(249, 250, 251, 0.8);">
+                <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem;">📁 上传自定义头像</h4>
+                <input type="file" id="avatarFileInput" class="form-input-modern" accept="image/*">
+                <div id="imagePreviewSection" style="display: none; margin-top: 1rem;">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <img id="imagePreview" style="max-width: 200px; max-height: 200px; border-radius: var(--radius-lg); border: 2px solid var(--gray-200);">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label-modern">图片大小调整</label>
+                        <input type="range" id="imageSizeSlider" min="100" max="300" value="200" 
+                               style="width: 100%;">
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn-primary btn-modern" id="uploadAvatarBtn">📤 上传头像</button>
+                        <button class="btn-outline btn-modern" id="cancelUploadBtn">❌ 取消</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal Actions -->
+            <div id="avatarActions" class="flex gap-3 justify-center" style="display: none;">
+                <button class="btn-primary btn-modern" id="confirmAvatarBtn">✅ 确认选择</button>
+                <button class="btn-outline btn-modern" id="cancelAvatarBtn">❌ 取消</button>
+                <button class="btn-secondary btn-modern" id="randomAvatarsBtn">🎲 换一批</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="text-center">
+            <div style="width: 50px; height: 50px; border: 4px solid var(--gray-200); border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+            <p style="font-weight: 600; color: var(--gray-700);">加载中...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./modern-app.js"></script>
+</body>
+</html>

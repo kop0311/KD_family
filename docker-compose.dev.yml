@@ -1,0 +1,161 @@
+version: '3.8'
+
+services:
+  # Development MySQL database
+  mysql-dev:
+    image: mysql:8.0
+    container_name: kdfamily_mysql_dev
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./schema:/docker-entrypoint-initdb.d
+      - ./docs/database:/docker-entrypoint-initdb.d/enhanced
+    networks:
+      - kdfamily_dev_network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis for caching and sessions
+  redis-dev:
+    image: redis:7-alpine
+    container_name: kdfamily_redis_dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - kdfamily_dev_network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # phpMyAdmin for development
+  phpmyadmin-dev:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: kdfamily_phpmyadmin_dev
+    environment:
+      PMA_HOST: mysql-dev
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql-dev
+    networks:
+      - kdfamily_dev_network
+    restart: unless-stopped
+
+  # Adminer alternative
+  adminer-dev:
+    image: adminer:latest
+    container_name: kdfamily_adminer_dev
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql-dev
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql-dev
+    networks:
+      - kdfamily_dev_network
+    restart: unless-stopped
+
+  # Application development server
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: kdfamily_app_dev
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql-dev
+      DB_PORT: 3306
+      REDIS_URL: redis://redis-dev:6379
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Debug port
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+    depends_on:
+      - mysql-dev
+      - redis-dev
+    networks:
+      - kdfamily_dev_network
+    restart: unless-stopped
+    command: npm run dev:debug
+
+  # Test database for running tests
+  mysql-test:
+    image: mysql:8.0
+    container_name: kdfamily_mysql_test
+    environment:
+      MYSQL_ROOT_PASSWORD: testpassword
+      MYSQL_DATABASE: kdfamily_test
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_pass
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./schema:/docker-entrypoint-initdb.d
+    networks:
+      - kdfamily_dev_network
+    command: --default-authentication-plugin=mysql_native_password
+    profiles:
+      - testing
+
+  # Redis for testing
+  redis-test:
+    image: redis:7-alpine
+    container_name: kdfamily_redis_test
+    ports:
+      - "6380:6379"
+    networks:
+      - kdfamily_dev_network
+    profiles:
+      - testing
+
+  # Monitoring with Prometheus (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kdfamily_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - kdfamily_dev_network
+    profiles:
+      - monitoring
+
+  # Grafana for dashboards (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kdfamily_grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - kdfamily_dev_network
+    profiles:
+      - monitoring
+
+volumes:
+  mysql_dev_data:
+  redis_dev_data:
+  grafana_data:
+
+networks:
+  kdfamily_dev_network:
+    driver: bridge
