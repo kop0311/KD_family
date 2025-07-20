@@ -1,0 +1,186 @@
+# KD Family Caddy Configuration
+# 自动HTTPS和反向代理配置
+
+# 主域名配置 (生产环境)
+kdfamily.example.com {
+    # 自动HTTPS
+    tls {
+        protocols tls1.2 tls1.3
+    }
+
+    # 安全头部
+    header {
+        # 安全头部
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        
+        # CSP策略
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' ws: wss:;"
+        
+        # 移除服务器信息
+        -Server
+    }
+
+    # API路由 - 反向代理到后端
+    handle /api/* {
+        reverse_proxy backend:3000 {
+            # 健康检查
+            health_uri /health
+            health_interval 30s
+            health_timeout 5s
+            
+            # 负载均衡 (如果有多个后端实例)
+            lb_policy round_robin
+            
+            # 请求头设置
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+        }
+    }
+
+    # WebSocket支持 (如果需要实时功能)
+    handle /ws/* {
+        reverse_proxy backend:3000 {
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # 文件上传路由
+    handle /uploads/* {
+        reverse_proxy backend:3000
+    }
+
+    # 静态文件服务 - 前端应用
+    handle /* {
+        # 尝试提供静态文件，如果不存在则返回index.html (SPA路由)
+        try_files {path} /index.html
+        
+        # 静态文件根目录
+        root * /var/www/kdfamily
+        
+        # 文件服务器
+        file_server {
+            # 隐藏.文件
+            hide .htaccess .env
+        }
+        
+        # 缓存策略
+        @static {
+            path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+        }
+        header @static Cache-Control "public, max-age=31536000, immutable"
+        
+        # HTML文件不缓存
+        @html {
+            path *.html
+        }
+        header @html Cache-Control "no-cache, no-store, must-revalidate"
+    }
+
+    # 访问日志
+    log {
+        output file /var/log/caddy/kdfamily-access.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+    }
+
+    # 错误日志
+    errors {
+        output file /var/log/caddy/kdfamily-error.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+    }
+}
+
+# 开发环境配置
+localhost:8080, 127.0.0.1:8080 {
+    # API路由
+    handle /api/* {
+        reverse_proxy localhost:3000
+    }
+
+    # 前端开发服务器 (Vite)
+    handle /* {
+        reverse_proxy localhost:5173
+    }
+
+    # 开发环境日志
+    log {
+        output stdout
+        level DEBUG
+    }
+}
+
+# 管理面板子域名 (可选)
+admin.kdfamily.example.com {
+    # 基本认证保护
+    basicauth {
+        admin $2a$14$hashed_password_here
+    }
+
+    # phpMyAdmin
+    handle /phpmyadmin/* {
+        reverse_proxy phpmyadmin:80
+    }
+
+    # Redis Commander
+    handle /redis/* {
+        reverse_proxy redis-commander:8081
+    }
+
+    # Grafana监控
+    handle /grafana/* {
+        reverse_proxy grafana:3000
+    }
+
+    # 默认重定向到监控面板
+    handle /* {
+        redir /grafana/
+    }
+}
+
+# API文档子域名 (开发/测试环境)
+docs.kdfamily.example.com {
+    reverse_proxy backend:3000 {
+        # 只代理API文档路径
+        rewrite * /api-docs{path}
+    }
+}
+
+# 全局配置
+{
+    # 邮箱用于Let's Encrypt
+    email admin@kdfamily.example.com
+    
+    # 自动HTTPS
+    auto_https on
+    
+    # 服务器配置
+    servers {
+        protocol {
+            experimental_http3
+        }
+    }
+    
+    # 日志级别
+    log {
+        level INFO
+    }
+}
+
+# HTTP重定向到HTTPS (生产环境)
+http://kdfamily.example.com {
+    redir https://kdfamily.example.com{uri} permanent
+}

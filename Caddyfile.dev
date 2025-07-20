@@ -1,0 +1,154 @@
+# KD Family 开发环境 Caddy 配置
+# 用于本地开发和测试
+
+# 本地开发主站
+localhost:8080 {
+    # API路由 - 代理到后端开发服务器
+    handle /api/* {
+        reverse_proxy localhost:3000 {
+            # 开发环境健康检查
+            health_uri /health
+            health_interval 10s
+            health_timeout 3s
+        }
+    }
+
+    # WebSocket支持 (开发环境热重载)
+    handle /ws/* {
+        reverse_proxy localhost:3000 {
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # Vite HMR WebSocket
+    handle /@vite/client {
+        reverse_proxy localhost:5173 {
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # 前端开发服务器 (Vite)
+    handle /* {
+        reverse_proxy localhost:5173 {
+            # Vite特定头部
+            header_up Host {upstream_hostport}
+            header_up Origin {scheme}://{host}
+        }
+    }
+
+    # 开发环境日志
+    log {
+        output stdout
+        level DEBUG
+        format console
+    }
+}
+
+# API开发服务器 (直接访问后端)
+localhost:3000 {
+    reverse_proxy localhost:3000
+
+    # CORS头部 (开发环境)
+    header {
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type, Authorization"
+    }
+
+    log {
+        output stdout
+        level DEBUG
+    }
+}
+
+# 数据库管理工具
+localhost:8081 {
+    # phpMyAdmin
+    handle /phpmyadmin/* {
+        reverse_proxy localhost:8080 {
+            header_up Host {upstream_hostport}
+        }
+    }
+
+    # Adminer
+    handle /adminer/* {
+        reverse_proxy localhost:8081 {
+            header_up Host {upstream_hostport}
+        }
+    }
+
+    # Redis Commander
+    handle /redis/* {
+        reverse_proxy localhost:8082 {
+            header_up Host {upstream_hostport}
+        }
+    }
+
+    # 默认页面
+    handle /* {
+        respond `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>KD Family 开发工具</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                .tool { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+                a { color: #007bff; text-decoration: none; }
+                a:hover { text-decoration: underline; }
+            </style>
+        </head>
+        <body>
+            <h1>KD Family 开发工具面板</h1>
+            <div class="tool">
+                <h3>数据库管理</h3>
+                <p><a href="/phpmyadmin/" target="_blank">phpMyAdmin</a> - MySQL数据库管理</p>
+                <p><a href="/adminer/" target="_blank">Adminer</a> - 轻量级数据库管理</p>
+            </div>
+            <div class="tool">
+                <h3>缓存管理</h3>
+                <p><a href="/redis/" target="_blank">Redis Commander</a> - Redis缓存管理</p>
+            </div>
+            <div class="tool">
+                <h3>应用访问</h3>
+                <p><a href="http://localhost:8080" target="_blank">前端应用</a> - React开发服务器</p>
+                <p><a href="http://localhost:3000/api-docs" target="_blank">API文档</a> - Swagger文档</p>
+            </div>
+        </body>
+        </html>
+        ` 200 {
+            Content-Type "text/html; charset=utf-8"
+        }
+    }
+}
+
+# 邮件测试工具 (Mailhog)
+localhost:8025 {
+    reverse_proxy localhost:8025
+    
+    log {
+        output stdout
+        level INFO
+    }
+}
+
+# 全局开发配置
+{
+    # 开发环境不需要邮箱
+    auto_https off
+    
+    # 本地CA (用于HTTPS测试)
+    local_certs
+    
+    # 调试模式
+    debug
+    
+    # 日志配置
+    log {
+        level DEBUG
+        output stdout
+        format console
+    }
+}
