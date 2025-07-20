@@ -1,6 +1,37 @@
 # KD Family Chore System
 
-A family chore scoring system web application built with Node.js, Express, and MySQL.
+A modern family chore scoring system web application with full-stack TypeScript support and Caddy web server.
+
+## 🚀 Technology Stack
+
+### Frontend (Modern React App)
+- **Framework**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **State Management**: Zustand
+- **Routing**: React Router v6
+- **UI Framework**: Tailwind CSS + Headless UI
+- **Forms**: React Hook Form + Zod
+- **HTTP Client**: Axios + TanStack Query
+- **Animation**: Framer Motion
+- **Testing**: Vitest + Testing Library + Playwright
+
+### Backend (Node.js API)
+- **Runtime**: Node.js + TypeScript + Express
+- **Database**: MySQL 8.0 + Prisma ORM
+- **Authentication**: JWT + bcrypt
+- **Validation**: Zod schemas
+- **Security**: Helmet, CORS, Rate Limiting
+- **Caching**: Redis
+- **Logging**: Winston
+- **Testing**: Jest + Supertest
+
+### Web Server & Proxy
+- **Server**: Caddy 2.x
+- **Features**: Auto HTTPS, HTTP/3, Reverse Proxy
+- **SSL**: Automatic Let's Encrypt certificates
+- **Caching**: Smart static file caching
+- **Security**: Built-in security headers
+- **Monitoring**: Structured logging + metrics
 
 ## 🚀 Quick Start
 
