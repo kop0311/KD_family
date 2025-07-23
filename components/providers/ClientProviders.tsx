@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '../../store';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { NotificationProvider } from '@/components/providers/NotificationProvider';
+import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { AccessibilityProvider } from '@/components/accessibility/AccessibilityProvider';
 
@@ -19,9 +20,11 @@ export function ClientProviders({ children }: ClientProvidersProps) {
       <PersistGate loading={<LoadingSpinner />} persistor={persistor}>
         <AccessibilityProvider>
           <ErrorBoundary>
-            <NotificationProvider>
-              {children}
-            </NotificationProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
+            </AuthProvider>
           </ErrorBoundary>
         </AccessibilityProvider>
       </PersistGate>

@@ -1,0 +1,41 @@
+{
+  "name": "KD之家 - 家务积分系统",
+  "short_name": "KD之家",
+  "description": "现代化家务积分管理系统",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "仪表板",
+      "short_name": "仪表板",
+      "description": "查看家务积分仪表板",
+      "url": "/dashboard"
+    },
+    {
+      "name": "任务管理",
+      "short_name": "任务",
+      "description": "管理家务任务",
+      "url": "/tasks"
+    },
+    {
+      "name": "排行榜",
+      "short_name": "排行榜",
+      "description": "查看积分排行榜",
+      "url": "/leaderboard"
+    }
+  ]
+}
