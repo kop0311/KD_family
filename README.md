@@ -2,6 +2,31 @@
 
 A modern family chore scoring system web application with full-stack TypeScript support and Caddy web server.
 
+## 🏗️ Modular Architecture
+
+The project uses a modular architecture with different functionalities organized into independent modules:
+
+```
+KD_Family/
+├── modules/
+│   ├── frontend/          # Next.js frontend application
+│   ├── backend/           # Node.js/Rust backend services
+│   ├── database/          # PostgreSQL database management
+│   ├── testing/           # Testing framework and test suites
+│   └── shared/            # Shared infrastructure and documentation
+├── package.json           # Main project dependencies
+├── docker-compose.yml     # Docker service orchestration
+└── README.md             # Project documentation
+```
+
+### Module Overview
+
+- **Frontend** (`modules/frontend/`): Next.js 15 application with React 18, TypeScript, and modern UI components
+- **Backend** (`modules/backend/`): Node.js Express API with Rust components and PostgreSQL integration
+- **Database** (`modules/database/`): PostgreSQL schema, migration scripts, and database management tools
+- **Testing** (`modules/testing/`): Comprehensive testing framework with unit, integration, and E2E tests
+- **Shared** (`modules/shared/`): Docker configurations, Kubernetes manifests, and project documentation
+
 ## 🚀 Technology Stack
 
 ### Frontend (Modern React App)
@@ -17,7 +42,7 @@ A modern family chore scoring system web application with full-stack TypeScript 
 
 ### Backend (Node.js API)
 - **Runtime**: Node.js + TypeScript + Express
-- **Database**: MySQL 8.0 + Prisma ORM
+- **Database**: PostgreSQL 15 + pg driver
 - **Authentication**: JWT + bcrypt
 - **Validation**: Zod schemas
 - **Security**: Helmet, CORS, Rate Limiting
@@ -35,40 +60,74 @@ A modern family chore scoring system web application with full-stack TypeScript 
 
 ## 🚀 Quick Start
 
-### Using Docker (Recommended)
-```bash
-# Start the entire application
-docker-compose up -d
+### Prerequisites
+- Node.js 18+
+- pnpm (recommended) or npm
+- Docker & Docker Compose
+- PostgreSQL 15+ (or use Docker)
 
-# Start only database services
-./start-database.bat  # Windows
-# or
-docker-compose up -d mysql phpmyadmin adminer  # Linux/Mac
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd KD_Family
 ```
 
-### Manual Setup
+2. **Install dependencies**
 ```bash
-# Install dependencies
 npm install
+# This will automatically install both backend and frontend dependencies
+```
 
-# Set up environment variables
+3. **Set up environment variables**
+```bash
 cp .env.example .env
-# Edit .env with your database credentials
+# Edit .env with your database credentials and domain settings
+```
 
-# Run database migrations
-# Import schema/init.sql into your MySQL database
+4. **Start with Caddy (Recommended)**
+```bash
+# Development environment
+npm run caddy:dev
+# Access: http://localhost:8080
 
-# Start the application
-npm start
-# or for development
+# Production environment
+export DOMAIN=your-domain.com
+npm run caddy:prod
+# Access: https://your-domain.com
+```
+
+### Alternative: Traditional Development
+```bash
+# Start backend and frontend separately
 npm run dev
+# Frontend: http://localhost:5173
+# Backend: http://localhost:3000
+```
+
+### Using Docker
+```bash
+# Modern stack with Caddy
+docker-compose -f docker-compose.modern.yml up -d
+
+# Development environment
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
 ## 📱 Application Access
 
-- **Main Application**: http://localhost:3000
+### With Caddy (Recommended)
+- **Frontend (React App)**: http://localhost:8080
+- **API Documentation**: http://localhost:3000/api-docs
+- **Admin Tools**: http://localhost:8081
+
+### Direct Access
+- **Frontend (Vite Dev)**: http://localhost:5173
+- **Backend API**: http://localhost:3000
 - **phpMyAdmin**: http://localhost:8080
 - **Adminer**: http://localhost:8081
+- **Redis Commander**: http://localhost:8082
 - **Database**: localhost:3307
 
 ## 🏗️ Project Structure
@@ -109,7 +168,7 @@ npm run typecheck
 
 ### Production
 - **express**: Web framework
-- **mysql2**: MySQL client
+- **pg**: PostgreSQL client
 - **bcryptjs**: Password hashing
 - **jsonwebtoken**: JWT authentication
 - **joi**: Input validation
@@ -133,9 +192,8 @@ npm run typecheck
 
 ## 🐳 Docker Services
 
-- **mysql**: MySQL 8.0 database
-- **phpmyadmin**: Web-based MySQL administration
-- **adminer**: Lightweight database management
+- **postgres**: PostgreSQL 15 database
+- **pgadmin**: Web-based PostgreSQL administration
 - **app**: Main Node.js application
 
 ## 📝 License

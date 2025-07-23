@@ -1,0 +1,17 @@
+{
+  "buildCommand": "cd modules/frontend && npm run build",
+  "outputDirectory": "modules/frontend/.next",
+  "devCommand": "cd modules/frontend && npm run dev",
+  "installCommand": "npm install",
+  "functions": {
+    "modules/frontend/app/api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/modules/frontend/app/api/$1"
+    }
+  ]
+}

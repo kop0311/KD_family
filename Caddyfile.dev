@@ -1,0 +1,163 @@
+# KD Family Development Caddyfile
+# Optimized for Next.js 15 with Turbopack and Module Federation
+
+{
+    # Global options
+    admin off
+    log {
+        output stdout
+        format json
+        level INFO
+    }
+    
+    # Enable HTTP/3 and HTTP/2
+    servers {
+        protocol {
+            experimental_http3
+        }
+    }
+}
+
+# Development server configuration
+:8080 {
+    # Security headers
+    header {
+        # HTTPS security headers
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        
+        # CORS headers for development
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+        
+        # Remove server information
+        -Server
+        -X-Powered-By
+    }
+
+    # Handle preflight requests
+    @options {
+        method OPTIONS
+    }
+    respond @options 204
+
+    # API routes - proxy to backend server
+    handle /api/* {
+        reverse_proxy localhost:3000 {
+            # Health check configuration
+            health_uri /api/health
+            health_interval 30s
+            health_timeout 5s
+            health_status 2xx
+            
+            # Request headers
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            
+            # Timeout settings
+            transport http {
+                dial_timeout 5s
+                response_header_timeout 30s
+            }
+        }
+    }
+
+    # File uploads - proxy to backend
+    handle /uploads/* {
+        reverse_proxy localhost:3000 {
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Next.js application - proxy to frontend server
+    handle /* {
+        reverse_proxy localhost:3001 {
+            # Health check for Next.js
+            health_uri /
+            health_interval 30s
+            health_timeout 10s
+            health_status 2xx
+            
+            # WebSocket support for hot reload
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+            
+            # Request headers
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            
+            # Timeout settings for development
+            transport http {
+                dial_timeout 5s
+                response_header_timeout 60s
+                read_timeout 60s
+                write_timeout 60s
+            }
+        }
+    }
+
+    # Static file caching for development
+    @static {
+        path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot *.webp *.avif
+    }
+    header @static {
+        Cache-Control "public, max-age=3600"
+        Vary "Accept-Encoding"
+    }
+    
+    # Next.js specific files
+    @nextjs {
+        path /_next/static/* /static/*
+    }
+    header @nextjs {
+        Cache-Control "public, max-age=31536000, immutable"
+    }
+    
+    # HTML files - no cache for development
+    @html {
+        path *.html /
+    }
+    header @html {
+        Cache-Control "no-cache, no-store, must-revalidate"
+        Pragma "no-cache"
+        Expires "0"
+    }
+
+    # Compression
+    encode {
+        gzip 6
+        zstd
+        minimum_length 1024
+        match {
+            header Content-Type text/*
+            header Content-Type application/json*
+            header Content-Type application/javascript*
+            header Content-Type application/xml*
+            header Content-Type image/svg+xml*
+        }
+    }
+
+    # Access logging
+    log {
+        output file /var/log/caddy/kdfamily-dev-access.log {
+            roll_size 100MB
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+        level INFO
+    }
+}

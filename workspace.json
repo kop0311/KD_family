@@ -1,0 +1,96 @@
+{
+  "name": "KD Family",
+  "version": "2.0.0",
+  "description": "Modular family chore management system",
+  "modules": {
+    "frontend": {
+      "path": "modules/frontend",
+      "type": "nextjs",
+      "description": "Next.js frontend application",
+      "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "test": "jest"
+      },
+      "dependencies": [
+        "shared"
+      ]
+    },
+    "backend": {
+      "path": "modules/backend",
+      "type": "nodejs-rust",
+      "description": "Node.js/Rust backend services",
+      "scripts": {
+        "dev": "npm run dev:server",
+        "build": "npm run build && cargo build",
+        "start": "npm start",
+        "test": "jest"
+      },
+      "dependencies": [
+        "database",
+        "shared"
+      ]
+    },
+    "database": {
+      "path": "modules/database",
+      "type": "postgresql",
+      "description": "PostgreSQL database management",
+      "scripts": {
+        "init": "docker exec -i postgres psql -U kdfamily_user -d kdfamily < schema/postgresql_init.sql",
+        "migrate": "node scripts/migrate.js",
+        "test": "node scripts/performance-test.js"
+      },
+      "dependencies": []
+    },
+    "testing": {
+      "path": "modules/testing",
+      "type": "testing",
+      "description": "Testing framework and test suites",
+      "scripts": {
+        "test": "jest",
+        "test:e2e": "playwright test",
+        "test:coverage": "jest --coverage"
+      },
+      "dependencies": [
+        "frontend",
+        "backend",
+        "database"
+      ]
+    },
+    "shared": {
+      "path": "modules/shared",
+      "type": "infrastructure",
+      "description": "Shared infrastructure and documentation",
+      "scripts": {
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "k8s:deploy": "kubectl apply -f k8s/"
+      },
+      "dependencies": []
+    }
+  },
+  "development": {
+    "setup": [
+      "npm install",
+      "docker-compose up -d postgres",
+      "cd modules/database && npm run init",
+      "cd modules/frontend && npm install",
+      "cd modules/backend && npm install && cargo build"
+    ],
+    "start": [
+      "docker-compose up -d",
+      "cd modules/backend && npm run dev &",
+      "cd modules/frontend && npm run dev"
+    ]
+  },
+  "production": {
+    "build": [
+      "cd modules/frontend && npm run build",
+      "cd modules/backend && npm run build"
+    ],
+    "deploy": [
+      "docker-compose -f docker-compose.prod.yml up -d"
+    ]
+  }
+}

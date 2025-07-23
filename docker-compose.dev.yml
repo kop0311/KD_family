@@ -1,20 +1,22 @@
 version: '3.8'
 
 services:
-  # Caddy development proxy
+  # Caddy development proxy for Next.js
   caddy-dev:
     image: caddy:2-alpine
     container_name: kdfamily_caddy_dev
     ports:
-      - "8080:8080"
-      - "8081:8081"
-      - "8025:8025"
+      - "8080:8080"  # Main application access
+      - "8081:8081"  # Admin tools
+      - "8025:8025"  # Additional services
     volumes:
       - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
       - caddy_dev_logs:/var/log/caddy
     networks:
       - kdfamily_dev_network
     restart: unless-stopped
+    depends_on:
+      - app-dev
     profiles:
       - proxy
 
@@ -82,7 +84,7 @@ services:
       - kdfamily_dev_network
     restart: unless-stopped
 
-  # Application development server
+  # Application development server (Next.js + Backend)
   app-dev:
     build:
       context: .
@@ -95,8 +97,10 @@ services:
       DB_HOST: mysql-dev
       DB_PORT: 3306
       REDIS_URL: redis://redis-dev:6379
+      NEXT_TELEMETRY_DISABLED: 1
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Backend API
+      - "3001:3001"  # Next.js frontend
       - "9229:9229"  # Debug port
     volumes:
       - .:/app
@@ -108,7 +112,7 @@ services:
     networks:
       - kdfamily_dev_network
     restart: unless-stopped
-    command: npm run dev:debug
+    command: sh -c "npm run dev & npm run dev:client"
 
   # Test database for running tests
   mysql-test:

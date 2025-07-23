@@ -19,7 +19,7 @@
    - LiveReload支持（35729）
 
 3. **完整服务栈**
-   - MySQL 8.0 数据库
+   - PostgreSQL 15 数据库
    - Redis 7 缓存
    - Node.js 18 应用
    - phpMyAdmin 数据库管理
@@ -184,10 +184,10 @@ DEBUG=kdfamily:* npm start
 ### 数据库配置选项
 
 ```bash
-# MySQL (Docker)
-DB_TYPE=mysql
-DB_HOST=database
-DB_PORT=3306
+# PostgreSQL (Docker)
+DB_TYPE=postgresql
+DB_HOST=postgres
+DB_PORT=5432
 DB_NAME=kdfamily_dev
 DB_USER=kdfamily_user
 DB_PASSWORD=kdfamily_pass_2024
@@ -203,7 +203,7 @@ DB_TYPE=sqlite
 # 生产环境请修改这些密钥
 JWT_SECRET=change_in_production
 SESSION_SECRET=change_in_production
-MYSQL_ROOT_PASSWORD=change_in_production
+POSTGRES_PASSWORD=change_in_production
 ```
 
 ## 📦 Docker卷管理
@@ -268,7 +268,7 @@ curl http://localhost:3000/api/health
 
 # 3. 检查数据库连接
 ./docker/manage.sh db
-# 在MySQL中执行：SHOW DATABASES;
+# 在PostgreSQL中执行：\l
 
 # 4. 测试UI界面
 # 浏览器访问：http://localhost:3000/welcome.html
