@@ -92,10 +92,22 @@ if [ -n "$UNTRACKED_FILES" ]; then
 fi
 
 # Check for sensitive files that should be ignored
-SENSITIVE_PATTERNS=(".env" ".env.local" ".env.production" "*.key" "*.pem" "*.p12" ".mcp.json")
+SENSITIVE_FILES=(".env" ".env.local" ".env.production" ".mcp.json")
+SENSITIVE_PATTERNS=("*.key" "*.pem" "*.p12")
+
+# Check exact file matches
+for file in "${SENSITIVE_FILES[@]}"; do
+    if git ls-files | grep -x "$file" > /dev/null; then
+        log_error "❌ Sensitive file '$file' is tracked by Git!"
+        log_error "Please remove it from Git and add to .gitignore"
+        exit 1
+    fi
+done
+
+# Check pattern matches
 for pattern in "${SENSITIVE_PATTERNS[@]}"; do
     if git ls-files | grep -q "$pattern"; then
-        log_error "❌ Sensitive file '$pattern' is tracked by Git!"
+        log_error "❌ Sensitive file matching '$pattern' is tracked by Git!"
         log_error "Please remove it from Git and add to .gitignore"
         exit 1
     fi
