@@ -119,7 +119,7 @@ const EnhancedLogin: React.FC = () => {
               error={registerForm.errors.username}
               validator={(value) => {
                 const result = validateUsername(value);
-                return result.isValid ? null : result.message;
+                return result.isValid ? null : (result.message || '验证失败');
               }}
             />
 
@@ -135,7 +135,7 @@ const EnhancedLogin: React.FC = () => {
               error={registerForm.errors.email}
               validator={(value) => {
                 const result = validateEmail(value);
-                return result.isValid ? null : result.message;
+                return result.isValid ? null : (result.message || '验证失败');
               }}
             />
 
@@ -151,7 +151,7 @@ const EnhancedLogin: React.FC = () => {
               error={registerForm.errors.fullName}
               validator={(value) => {
                 const result = validateFullName(value);
-                return result.isValid ? null : result.message;
+                return result.isValid ? null : (result.message || '验证失败');
               }}
             />
 
@@ -182,7 +182,7 @@ const EnhancedLogin: React.FC = () => {
               error={registerForm.errors.password}
               validator={(value) => {
                 const result = validatePassword(value);
-                return result.isValid ? null : result.message;
+                return result.isValid ? null : (result.message || '验证失败');
               }}
             />
 
@@ -212,7 +212,7 @@ const EnhancedLogin: React.FC = () => {
               error={loginForm.errors.username}
               validator={(value) => {
                 const result = validateUsername(value);
-                return result.isValid ? null : result.message;
+                return result.isValid ? null : (result.message || '验证失败');
               }}
             />
 
@@ -228,7 +228,7 @@ const EnhancedLogin: React.FC = () => {
               error={loginForm.errors.password}
               validator={(value) => {
                 const result = validatePassword(value);
-                return result.isValid ? null : result.message;
+                return result.isValid ? null : (result.message || '验证失败');
               }}
             />
 
