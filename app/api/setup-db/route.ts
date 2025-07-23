@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
         columns_count: tableCheck.rows.length,
         users_count: parseInt(userCount.rows[0]?.count || '0'),
         admin_created: !adminExists,
-        columns: tableCheck.rows.map(row => ({
+        columns: tableCheck.rows.map((row: any) => ({
           name: row.column_name,
           type: row.data_type,
           nullable: row.is_nullable === 'YES',
