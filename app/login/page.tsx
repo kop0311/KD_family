@@ -1,4 +1,4 @@
-import { LoginForm } from '@/components/features/auth/LoginForm';
+import { AuthForm } from '@/components/features/auth/AuthForm';
 
 export const metadata = {
   title: '登录 - KD之家',
@@ -17,7 +17,7 @@ export default function LoginPage() {
             登录您的账户以管理家务积分
           </p>
         </div>
-        <LoginForm />
+        <AuthForm />
       </div>
     </div>
   );

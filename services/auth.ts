@@ -1,4 +1,5 @@
 import { apiClient } from './api';
+import axios from 'axios';
 import type {
   LoginRequest,
   RegisterRequest,
@@ -17,17 +18,22 @@ export class AuthService {
    */
   static async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
-      const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
+      const response = await axios.post('/api/auth/login', credentials);
       const data = response.data;
+
+      if (!data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
 
       // Store token and user info
       this.setToken(data.token);
       this.setUser(data.user);
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
-      throw error;
+      const message = error.response?.data?.message || error.message || 'Login failed';
+      throw new Error(message);
     }
   }
 
@@ -36,17 +42,22 @@ export class AuthService {
    */
   static async register(userData: RegisterRequest): Promise<RegisterResponse> {
     try {
-      const response = await apiClient.post<RegisterResponse>('/auth/register', userData);
+      const response = await axios.post('/api/auth/register', userData);
       const data = response.data;
+
+      if (!data.success) {
+        throw new Error(data.message || 'Registration failed');
+      }
 
       // Store token and user info
       this.setToken(data.token);
       this.setUser(data.user);
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
-      throw error;
+      const message = error.response?.data?.message || error.message || 'Registration failed';
+      throw new Error(message);
     }
   }
 
@@ -56,8 +67,13 @@ export class AuthService {
   static async logout(): Promise<void> {
     try {
       // Call logout endpoint if token exists
-      if (this.getToken()) {
-        await apiClient.post('/auth/logout');
+      const token = this.getToken();
+      if (token) {
+        await axios.post('/api/auth/logout', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
       }
     } catch (error) {
       console.error('Logout API call failed:', error);
@@ -73,7 +89,19 @@ export class AuthService {
    */
   static async getCurrentUser(): Promise<User | null> {
     try {
-      const response = await apiClient.get<MeResponse>('/auth/me');
+      const token = this.getToken();
+      if (!token) return null;
+
+      const response = await axios.get('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Failed to get user info');
+      }
+
       const data = response.data;
 
       // Transform backend user format to frontend format
@@ -81,6 +109,7 @@ export class AuthService {
         id: data.user.id,
         username: data.user.username,
         email: data.user.email,
+        fullName: data.user.full_name,
         role: data.user.role as 'advisor' | 'parent' | 'member',
         avatar: data.user.avatar_url,
         totalPoints: 0, // Will be loaded separately
@@ -90,7 +119,7 @@ export class AuthService {
 
       this.setUser(user);
       return user;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to get current user:', error);
       this.clearAuth();
       return null;
@@ -142,6 +171,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      fullName: user.fullName || user.full_name || '',
       role: user.role,
       avatar: user.avatarUrl || user.avatar_url,
       totalPoints: user.totalPoints || 0,

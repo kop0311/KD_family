@@ -2,6 +2,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  fullName: string;
   role: 'advisor' | 'parent' | 'member';
   avatar?: string;
   totalPoints: number;
