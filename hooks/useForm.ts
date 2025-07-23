@@ -105,7 +105,7 @@ export function useForm<T extends Record<string, any>>({
   }, [values, validators, setError, clearError]);
 
   // 验证整个表单
-  const validateForm = useCallback(): boolean => {
+  const validateForm = useCallback((): boolean => {
     let isFormValid = true;
     const newErrors: Partial<Record<keyof T, string>> = {};
 

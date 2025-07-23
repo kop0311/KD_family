@@ -92,7 +92,7 @@ export const CreateTaskForm: React.FC = () => {
                 error={form.errors.title}
                 validator={(value) => {
                   const result = validateTaskTitle(value);
-                  return result.isValid ? null : result.message;
+                  return result.isValid ? null : (result.message || '验证失败');
                 }}
               />
 
@@ -109,7 +109,7 @@ export const CreateTaskForm: React.FC = () => {
                 error={form.errors.description}
                 validator={(value) => {
                   const result = validateTaskDescription(value);
-                  return result.isValid ? null : result.message;
+                  return result.isValid ? null : (result.message || '验证失败');
                 }}
               />
 
@@ -139,7 +139,7 @@ export const CreateTaskForm: React.FC = () => {
                   error={form.errors.points}
                   validator={(value) => {
                     const result = validatePoints(Number(value));
-                    return result.isValid ? null : result.message;
+                    return result.isValid ? null : (result.message || '验证失败');
                   }}
                 />
               </div>
@@ -155,7 +155,7 @@ export const CreateTaskForm: React.FC = () => {
                 error={form.errors.dueDate}
                 validator={(value) => {
                   const result = validateDate(value);
-                  return result.isValid ? null : result.message;
+                  return result.isValid ? null : (result.message || '验证失败');
                 }}
               />
 

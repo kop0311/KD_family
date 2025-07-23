@@ -12,7 +12,7 @@ export interface FormFieldProps {
   required?: boolean;
   disabled?: boolean;
   error?: string;
-  validator?: (value: string | number) => string | null;
+  validator?: (value: string) => string | null;
   options?: { value: string; label: string }[];
   className?: string;
   rows?: number;
@@ -44,7 +44,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   // 实时验证
   useEffect(() => {
     if (validator && touched && value !== '') {
-      const validationError = validator(value);
+      const validationError = validator(String(value));
       setInternalError(validationError);
     } else if (touched && value === '' && required) {
       setInternalError(`${label}不能为空`);

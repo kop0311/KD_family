@@ -80,7 +80,7 @@ const ProfileEditForm: React.FC<{
         error={form.errors.fullName}
         validator={(value) => {
           const result = validateFullName(value);
-          return result.isValid ? null : result.message;
+          return result.isValid ? null : (result.message || '验证失败');
         }}
       />
 
@@ -96,7 +96,7 @@ const ProfileEditForm: React.FC<{
         error={form.errors.email}
         validator={(value) => {
           const result = validateEmail(value);
-          return result.isValid ? null : result.message;
+          return result.isValid ? null : (result.message || '验证失败');
         }}
       />
 
@@ -172,7 +172,7 @@ export const UserProfile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [avatar, setAvatar] = useState<File | null>(null);
 
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const { addNotification } = useNotification();
   const queryClient = useQueryClient();
 
@@ -185,10 +185,12 @@ export const UserProfile: React.FC = () => {
 
   // 更新用户资料
   const updateProfileMutation = useMutation({
-    mutationFn: (profileData: ProfileEditFormData) =>
-      userAPI.updateUser(user?.id || 0, profileData),
+    mutationFn: async (profileData: ProfileEditFormData) => {
+      // TODO: Implement userAPI.updateUser when endpoint is available
+      throw new Error('更新用户资料功能暂未实现');
+    },
     onSuccess: (updatedUser) => {
-      updateUser(updatedUser.data);
+      // TODO: Update user context when updateUser function is available
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ['userStats'] });
       addNotification({
@@ -206,9 +208,12 @@ export const UserProfile: React.FC = () => {
 
   // 上传头像
   const uploadAvatarMutation = useMutation({
-    mutationFn: (file: File) => userAPI.uploadAvatar(user?.id || 0, file),
+    mutationFn: async (file: File) => {
+      // TODO: Implement userAPI.uploadAvatar when endpoint is available
+      throw new Error('头像上传功能暂未实现');
+    },
     onSuccess: (response) => {
-      updateUser({ ...user, avatar: response.data.avatarUrl });
+      // TODO: Update user context when updateUser function is available
       addNotification({
         type: 'success',
         message: '头像上传成功'
@@ -332,25 +337,25 @@ export const UserProfile: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StatCard
             title="总积分"
-            value={userStats?.totalPoints || 0}
+            value={userStats?.data?.totalPoints || 0}
             icon={<Trophy className="w-8 h-8" />}
             color="text-yellow-400"
           />
           <StatCard
             title="完成任务"
-            value={userStats?.completedTasks || 0}
+            value={userStats?.data?.completedTasks || 0}
             icon={<CheckCircle className="w-8 h-8" />}
             color="text-green-400"
           />
           <StatCard
             title="当前等级"
-            value={userStats?.level || 1}
+            value={userStats?.data?.level || 1}
             icon={<Star className="w-8 h-8" />}
             color="text-purple-400"
           />
           <StatCard
             title="获得徽章"
-            value={userStats?.badges || 0}
+            value={userStats?.data?.badges || 0}
             icon={<Award className="w-8 h-8" />}
             color="text-blue-400"
           />

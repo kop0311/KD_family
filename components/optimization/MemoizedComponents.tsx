@@ -295,7 +295,7 @@ export const useStableCallback = <T extends (...args: any[]) => any>(callback: T
   return useCallback(((...args: any[]) => callbackRef.current(...args)) as T, []);
 };
 
-export const useDebounce = <T>(value: T, delay: number): T => {
+export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
@@ -311,7 +311,7 @@ export const useDebounce = <T>(value: T, delay: number): T => {
   return debouncedValue;
 };
 
-export const useThrottle = <T>(value: T, limit: number): T => {
+export function useThrottle<T>(value: T, limit: number): T {
   const [throttledValue, setThrottledValue] = useState<T>(value);
   const lastRan = useRef<number>(Date.now());
 

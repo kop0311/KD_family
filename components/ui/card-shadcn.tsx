@@ -26,7 +26,7 @@ const CardShadcn = React.forwardRef<
     onKeyDown={onClick ? (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        onClick();
+        onClick(e as any);
       }
     } : undefined}
     {...props}

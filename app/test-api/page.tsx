@@ -7,7 +7,12 @@ export default function TestAPI() {
   const [users, setUsers] = useState([])
   const [tasks, setTasks] = useState([])
   const [newUser, setNewUser] = useState({ username: '', email: '', role: 'child' })
-  const [newTask, setNewTask] = useState({ title: '', description: '', points: 0 })
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    taskType: 'PM' as const,
+    points: 0
+  })
   const [message, setMessage] = useState('')
 
   // 测试获取用户
@@ -56,7 +61,7 @@ export default function TestAPI() {
       const response = await taskAPI.createTask(newTask)
       if (response.data.success) {
         setMessage(`任务创建成功: ${response.data.data.title}`)
-        setNewTask({ title: '', description: '', points: 0 })
+        setNewTask({ title: '', description: '', taskType: 'PM' as const, points: 0 })
         testGetTasks() // 重新加载任务列表
       }
     } catch (error) {

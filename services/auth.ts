@@ -5,8 +5,8 @@ import type {
   LoginResponse,
   RegisterResponse,
   MeResponse
-} from '@types/api';
-import type { User } from '@types/user';
+} from '@/types/api';
+import type { User } from '@/types/user';
 
 export class AuthService {
   private static readonly TOKEN_KEY = 'authToken';
@@ -18,12 +18,13 @@ export class AuthService {
   static async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
+      const data = response.data;
 
       // Store token and user info
-      this.setToken(response.token);
-      this.setUser(response.user);
+      this.setToken(data.token);
+      this.setUser(data.user);
 
-      return response;
+      return data;
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
@@ -36,12 +37,13 @@ export class AuthService {
   static async register(userData: RegisterRequest): Promise<RegisterResponse> {
     try {
       const response = await apiClient.post<RegisterResponse>('/auth/register', userData);
+      const data = response.data;
 
       // Store token and user info
-      this.setToken(response.token);
-      this.setUser(response.user);
+      this.setToken(data.token);
+      this.setUser(data.user);
 
-      return response;
+      return data;
     } catch (error) {
       console.error('Registration failed:', error);
       throw error;
@@ -72,14 +74,15 @@ export class AuthService {
   static async getCurrentUser(): Promise<User | null> {
     try {
       const response = await apiClient.get<MeResponse>('/auth/me');
+      const data = response.data;
 
       // Transform backend user format to frontend format
       const user: User = {
-        id: response.user.id,
-        username: response.user.username,
-        email: response.user.email,
-        role: response.user.role as 'advisor' | 'parent' | 'member',
-        avatar: response.user.avatar_url,
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        role: data.user.role as 'advisor' | 'parent' | 'member',
+        avatar: data.user.avatar_url,
         totalPoints: 0, // Will be loaded separately
         createdAt: '', // Will be loaded separately
         updatedAt: '' // Will be loaded separately

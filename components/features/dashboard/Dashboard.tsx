@@ -27,7 +27,7 @@ import {
   ClockIcon,
   StarIcon,
   ArrowUpIcon,
-  FireIcon
+  FlameIcon
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
       title: '连续天数',
       value: '12',
       change: { value: '新记录!', type: 'increase' as const },
-      icon: <FireIcon className="w-6 h-6" />
+      icon: <FlameIcon className="w-6 h-6" />
     }
   ];
 
@@ -187,7 +187,7 @@ const Dashboard: React.FC = () => {
           <ResponsiveText
             as="h2"
             size={{ xs: 'xl', md: '2xl' }}
-            weight="bold"
+            weight={{ xs: 'bold', md: 'bold' }}
             className="text-white mb-6"
           >
             快速操作
@@ -247,7 +247,7 @@ const Dashboard: React.FC = () => {
             <ResponsiveText
               as="h2"
               size={{ xs: 'xl', md: '2xl' }}
-              weight="bold"
+              weight={{ xs: 'bold', md: 'bold' }}
               className="text-white"
             >
               最近活动

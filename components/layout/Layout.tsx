@@ -24,11 +24,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       await logout();
       addNotification({
         type: 'success',
+        title: '退出成功',
         message: '已成功退出登录'
       });
     } catch (error) {
       addNotification({
         type: 'error',
+        title: '退出失败',
         message: '退出登录失败'
       });
     }

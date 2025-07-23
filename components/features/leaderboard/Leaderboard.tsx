@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GlassContainer } from '@/components/ui/GlassContainer';
 import { Button } from '@/components/ui/Button';
 import { pointsAPI } from '@/services/api';
+import { LeaderboardEntry } from '@/store/slices/pointsSlice';
 import {
   Trophy,
   Medal,
@@ -71,7 +72,7 @@ const RankBadge: React.FC<RankBadgeProps> = ({ rank, size = 'md' }) => {
 };
 
 interface LeaderboardCardProps {
-  user: LeaderboardUser;
+  user: LeaderboardEntry;
   isCurrentUser?: boolean;
 }
 
@@ -86,9 +87,9 @@ const LeaderboardCard: React.FC<LeaderboardCardProps> = ({ user, isCurrentUser }
         <RankBadge rank={user.rank} size="lg" />
 
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold flex-shrink-0">
-          {user.avatar ? (
+          {(user as any).avatar ? (
             <img
-              src={user.avatar}
+              src={(user as any).avatar}
               alt={user.username}
               className="w-full h-full rounded-full object-cover"
             />
@@ -100,7 +101,7 @@ const LeaderboardCard: React.FC<LeaderboardCardProps> = ({ user, isCurrentUser }
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-white truncate">
-              {user.fullName || user.username}
+              {(user as any).fullName || user.username}
             </h3>
             {isCurrentUser && (
               <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full">
@@ -109,8 +110,8 @@ const LeaderboardCard: React.FC<LeaderboardCardProps> = ({ user, isCurrentUser }
             )}
           </div>
           <div className="flex items-center gap-4 text-sm text-white/70">
-            <span>等级 {user.level}</span>
-            <span>{user.completedTasks} 个任务</span>
+            <span>等级 {(user as any).level || 1}</span>
+            <span>{(user as any).completedTasks || 0} 个任务</span>
           </div>
         </div>
 
@@ -147,13 +148,13 @@ export const Leaderboard: React.FC = () => {
   // 获取排行榜数据
   const { data: leaderboardData, isLoading, error } = useQuery({
     queryKey: ['leaderboard', period],
-    queryFn: () => pointsAPI.getLeaderboard(period)
+    queryFn: () => pointsAPI.getLeaderboard()
   });
 
   // 获取统计数据
   const { data: stats } = useQuery({
     queryKey: ['leaderboardStats'],
-    queryFn: () => pointsAPI.getLeaderboard('all') // 获取总体统计
+    queryFn: () => pointsAPI.getLeaderboard() // 获取总体统计
   });
 
   const periodOptions = [
@@ -162,7 +163,7 @@ export const Leaderboard: React.FC = () => {
     { value: 'all', label: '总榜' }
   ];
 
-  const rankings = leaderboardData?.rankings || [];
+  const rankings = leaderboardData?.data?.data || [];
   const topThree = rankings.slice(0, 3);
   const others = rankings.slice(3);
 
@@ -194,19 +195,19 @@ export const Leaderboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatsCard
             title="活跃成员"
-            value={stats?.activeUsers || 0}
+            value={stats?.data?.data?.length || 0}
             icon={<Users className="w-6 h-6" />}
             color="text-blue-400"
           />
           <StatsCard
             title="本月任务"
-            value={stats?.monthlyTasks || 0}
+            value={stats?.data?.monthlyTasks || 0}
             icon={<TrendingUp className="w-6 h-6" />}
             color="text-green-400"
           />
           <StatsCard
             title="总积分"
-            value={stats?.totalPoints || 0}
+            value={stats?.data?.totalPoints || 0}
             icon={<Star className="w-6 h-6" />}
             color="text-yellow-400"
           />
@@ -251,14 +252,14 @@ export const Leaderboard: React.FC = () => {
               <div className="mb-8">
                 <h2 className="text-xl font-semibold text-white mb-4 text-center">🏆 冠军榜</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {topThree.map((user) => (
-                    <GlassContainer key={user.id} className="p-6 text-center">
+                  {topThree.map((user: LeaderboardEntry) => (
+                    <GlassContainer key={user.userId} className="p-6 text-center">
                       <RankBadge rank={user.rank} size="lg" />
                       <div className="mt-4">
                         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">
-                          {user.avatar ? (
+                          {(user as any).avatar ? (
                             <img
-                              src={user.avatar}
+                              src={(user as any).avatar}
                               alt={user.username}
                               className="w-full h-full rounded-full object-cover"
                             />
@@ -267,7 +268,7 @@ export const Leaderboard: React.FC = () => {
                           )}
                         </div>
                         <h3 className="font-semibold text-white mb-1">
-                          {user.fullName || user.username}
+                          {(user as any).fullName || user.username}
                         </h3>
                         <div className="text-2xl font-bold text-yellow-400 mb-1">
                           {user.totalPoints}
@@ -285,11 +286,11 @@ export const Leaderboard: React.FC = () => {
               <div>
                 <h2 className="text-xl font-semibold text-white mb-4">📊 完整排名</h2>
                 <div className="space-y-3">
-                  {others.map((user) => (
+                  {others.map((user: LeaderboardEntry) => (
                     <LeaderboardCard
-                      key={user.id}
+                      key={user.userId}
                       user={user}
-                      isCurrentUser={user.id === currentUserId}
+                      isCurrentUser={user.userId === currentUserId}
                     />
                   ))}
                 </div>

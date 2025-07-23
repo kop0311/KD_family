@@ -78,25 +78,26 @@ export const DynamicImport: React.FC<DynamicImportProps> = ({
 // Prebuilt dynamic components for common use cases
 export const DynamicModal = (props: any) => (
   <DynamicImport
-    loader={() => import('@/components/ui/Modal').then(mod => ({ default: mod.Modal }))}
+    loader={() => import('@/components/ui/Modal')}
     {...props}
   />
 );
 
-export const DynamicChart = (props: any) => (
-  <DynamicImport
-    loader={() => import('@/components/charts/Chart')}
-    fallback={() => (
-      <div className="h-64 glass-container flex items-center justify-center">
-        <div className="text-center">
-          <div className="loading-spinner mb-2"></div>
-          <p className="text-glass-muted">加载图表组件中...</p>
-        </div>
-      </div>
-    )}
-    {...props}
-  />
-);
+// TODO: Create Chart component before enabling this
+// export const DynamicChart = (props: any) => (
+//   <DynamicImport
+//     loader={() => import('@/components/charts/Chart')}
+//     fallback={() => (
+//       <div className="h-64 glass-container flex items-center justify-center">
+//         <div className="text-center">
+//           <div className="loading-spinner mb-2"></div>
+//           <p className="text-glass-muted">加载图表组件中...</p>
+//         </div>
+//       </div>
+//     )}
+//     {...props}
+//   />
+// );
 
 // HOC for dynamic imports
 export function withDynamicImport<P extends object>(

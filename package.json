@@ -22,6 +22,7 @@
     "start:client": "next start",
     "export": "next export",
     "analyze": "ANALYZE=true next build",
+    "prepare-deploy": "node scripts/prepare-deployment.js",
     "lint": "eslint app/ components/ store/ services/ --ext .js,.ts,.tsx",
     "lint:fix": "eslint app/ components/ store/ services/ --ext .js,.ts,.tsx --fix",
     "lint:next": "next lint",

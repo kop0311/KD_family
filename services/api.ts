@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { store } from '../store';
 import { logout, refreshAccessToken } from '../store/slices/authSlice';
+import type { CreateTaskRequest } from '@/types/api';
 
 // API base configuration - 更新为使用Next.js API Routes
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
@@ -88,29 +89,33 @@ export const authAPI = {
 
 // User API - 更新为使用新的API结构
 export const userAPI = {
-  getUsers: () => apiClient.get('/users'),
+  getUsers: (filters?: any) => apiClient.get('/users', { params: filters }),
   getUser: (id: number) => apiClient.get(`/users/${id}`),
-  createUser: (userData: { username: string; email: string; role?: string }) => 
+  createUser: (userData: { username: string; email: string; role?: string }) =>
     apiClient.post('/users', userData),
+  updateUser: (id: number, updates: any) => apiClient.put(`/users/${id}`, updates),
   getLeaderboard: () => apiClient.get('/leaderboard')
 };
 
 // Task API - 更新为使用新的API结构
 export const taskAPI = {
-  getTasks: () => apiClient.get('/tasks'),
+  getTasks: (filters?: any) => apiClient.get('/tasks', { params: filters }),
   getTask: (id: number) => apiClient.get(`/tasks/${id}`),
-  createTask: (taskData: {
-    title: string;
-    description?: string;
-    points?: number;
-  }) => apiClient.post('/tasks', taskData),
+  createTask: (taskData: CreateTaskRequest) => apiClient.post('/tasks', taskData),
+  updateTask: (id: number, taskData: Partial<CreateTaskRequest>) => apiClient.put(`/tasks/${id}`, taskData),
+  deleteTask: (id: number) => apiClient.delete(`/tasks/${id}`),
   assignTask: (id: number, userId: number) => apiClient.post(`/tasks/${id}/assign`, { userId }),
-  completeTask: (id: number) => apiClient.post(`/tasks/${id}/complete`)
+  claimTask: (id: number) => apiClient.post(`/tasks/${id}/claim`),
+  completeTask: (id: number) => apiClient.post(`/tasks/${id}/complete`),
+  approveTask: (id: number) => apiClient.post(`/tasks/${id}/approve`)
 };
 
 // Points API - 简化并指向排行榜API
 export const pointsAPI = {
-  getLeaderboard: () => apiClient.get('/leaderboard')
+  getPoints: (userId?: number) => apiClient.get(userId ? `/points/${userId}` : '/points'),
+  getPointsHistory: (userId: number) => apiClient.get(`/points/${userId}/history`),
+  awardPoints: (data: { userId: number; points: number; reason: string }) => apiClient.post('/points/award', data),
+  getLeaderboard: (period?: string) => apiClient.get(`/leaderboard${period ? `?period=${period}` : ''}`)
 };
 
 // Notification API

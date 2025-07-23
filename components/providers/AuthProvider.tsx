@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '@/services/auth';
 
-const authService = new AuthService();
+// AuthService methods are static, no need to create instance
 import type { User } from '@/types/user';
 
 interface AuthContextType {
@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const userData = await authService.getCurrentUser();
+          const userData = await AuthService.getCurrentUser();
           setUser(userData);
         }
       } catch (error) {
@@ -42,11 +42,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (username: string, password: string) => {
     try {
-      const response = await authService.login(email, password);
+      const response = await AuthService.login({ username, password });
       localStorage.setItem('token', response.token);
-      setUser(response.user);
+      // Convert API response to User type with default values
+      const user: User = {
+        ...response.user,
+        role: response.user.role as 'advisor' | 'parent' | 'member',
+        avatar: response.user.avatarUrl,
+        totalPoints: 0, // Will be fetched separately
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setUser(user);
       router.push('/dashboard');
     } catch (error) {
       throw error;

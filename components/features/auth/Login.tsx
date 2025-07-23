@@ -108,7 +108,7 @@ const Login: React.FC = () => {
         )}
 
         {showRegister ? (
-          <form onSubmit={handleRegisterSubmit} className="space-y-4">
+          <form onSubmit={registerForm.handleSubmit} className="space-y-4">
             <div>
               <label className="block text-white text-sm font-medium mb-2">
                 用户名 *
@@ -116,8 +116,8 @@ const Login: React.FC = () => {
               <input
                 type="text"
                 name="username"
-                value={registerData.username}
-                onChange={handleInputChange}
+                value={registerForm.values.username}
+                onChange={(e) => registerForm.handleChange('username')(e.target.value)}
                 className="glass-input w-full"
                 placeholder="请输入用户名"
                 required
@@ -131,8 +131,8 @@ const Login: React.FC = () => {
               <input
                 type="email"
                 name="email"
-                value={registerData.email}
-                onChange={handleInputChange}
+                value={registerForm.values.email}
+                onChange={(e) => registerForm.handleChange('email')(e.target.value)}
                 className="glass-input w-full"
                 placeholder="请输入邮箱地址"
                 required
@@ -146,8 +146,8 @@ const Login: React.FC = () => {
               <input
                 type="text"
                 name="fullName"
-                value={registerData.fullName}
-                onChange={handleInputChange}
+                value={registerForm.values.fullName}
+                onChange={(e) => registerForm.handleChange('fullName')(e.target.value)}
                 className="glass-input w-full"
                 placeholder="请输入真实姓名"
                 required
@@ -160,8 +160,8 @@ const Login: React.FC = () => {
               </label>
               <select
                 name="role"
-                value={registerData.role}
-                onChange={handleInputChange}
+                value={registerForm.values.role}
+                onChange={(e) => registerForm.handleChange('role')(e.target.value)}
                 className="glass-input w-full"
               >
                 <option value="member">家庭成员</option>
@@ -177,8 +177,8 @@ const Login: React.FC = () => {
               <input
                 type="password"
                 name="password"
-                value={registerData.password}
-                onChange={handleInputChange}
+                value={registerForm.values.password}
+                onChange={(e) => registerForm.handleChange('password')(e.target.value)}
                 className="glass-input w-full"
                 placeholder="请输入密码 (至少6位)"
                 required
@@ -196,7 +196,7 @@ const Login: React.FC = () => {
             </Button>
           </form>
         ) : (
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
+          <form onSubmit={loginForm.handleSubmit} className="space-y-4">
             <div>
               <label className="block text-white text-sm font-medium mb-2">
                 用户名
@@ -204,8 +204,8 @@ const Login: React.FC = () => {
               <input
                 type="text"
                 name="username"
-                value={formData.username}
-                onChange={handleInputChange}
+                value={loginForm.values.username}
+                onChange={(e) => loginForm.handleChange('username')(e.target.value)}
                 className="glass-input w-full"
                 placeholder="请输入用户名"
                 required
@@ -219,8 +219,8 @@ const Login: React.FC = () => {
               <input
                 type="password"
                 name="password"
-                value={formData.password}
-                onChange={handleInputChange}
+                value={loginForm.values.password}
+                onChange={(e) => loginForm.handleChange('password')(e.target.value)}
                 className="glass-input w-full"
                 placeholder="请输入密码"
                 required

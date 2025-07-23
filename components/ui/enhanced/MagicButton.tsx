@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
-export interface MagicButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface MagicButtonProps extends Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'type' | 'disabled' | 'form' | 'formAction' | 'formEncType' | 'formMethod' | 'formNoValidate' | 'formTarget' | 'name' | 'value' | 'autoFocus' | 'tabIndex' | 'id' | 'className' | 'style' | 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'title'> {
   variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;

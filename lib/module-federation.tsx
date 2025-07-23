@@ -36,7 +36,7 @@ export async function isRemoteAvailable(remoteName: string): Promise<boolean> {
     const container = window[remoteName];
     if (!container) return false;
     
-    await container.init(__webpack_share_scopes__.default);
+    await container.init((window as any).__webpack_share_scopes__?.default);
     return true;
   } catch (error) {
     console.warn(`Remote ${remoteName} is not available:`, error);

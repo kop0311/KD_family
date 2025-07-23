@@ -62,8 +62,48 @@ Thumbs.db
 # Build artifacts
 build/
 dist/
+out/
+
+# Next.js
+.next/
+.swc/
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
 
 # Temporary folders
 tmp/
 temp/
-.next/
+
+# Package manager
+.pnpm-debug.log*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Testing
+coverage/
+.nyc_output
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Rust (for backend components)
+target/
+Cargo.lock
+
+# Python (if any)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local development
+.env.development.local
+.env.test.local
+.env.production.local

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from 'react';
 import { clsx } from 'clsx';
-import { EyeIcon, EyeSlashIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
@@ -117,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                 aria-label={showPassword ? '隐藏密码' : '显示密码'}
               >
                 {showPassword ? (
-                  <EyeSlashIcon className="h-5 w-5" />
+                  <EyeOffIcon className="h-5 w-5" />
                 ) : (
                   <EyeIcon className="h-5 w-5" />
                 )}

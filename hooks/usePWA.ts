@@ -239,7 +239,6 @@ export const useNotifications = () => {
       await registration.showNotification(title, {
         badge: '/icons/badge-72x72.png',
         icon: '/icons/icon-192x192.png',
-        vibrate: [200, 100, 200],
         ...options
       });
     } else {

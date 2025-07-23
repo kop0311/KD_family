@@ -37,7 +37,7 @@ const initialState: PointsState = {
 // Async thunks
 export const fetchUserPoints = createAsyncThunk(
   'points/fetchUserPoints',
-  async (userId?: number, { rejectWithValue }) => {
+  async (userId: number | undefined, { rejectWithValue }) => {
     try {
       const response = await pointsAPI.getPoints(userId);
       return response.data;
@@ -61,7 +61,7 @@ export const fetchPointsHistory = createAsyncThunk(
 
 export const fetchLeaderboard = createAsyncThunk(
   'points/fetchLeaderboard',
-  async (period?: string, { rejectWithValue }) => {
+  async (period: string | undefined, { rejectWithValue }) => {
     try {
       const response = await pointsAPI.getLeaderboard(period);
       return response.data;

@@ -58,7 +58,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const response = await AuthService.login(credentials);
-      setUser(response.user as User);
+      // Convert API response to User type with default values
+      const user: User = {
+        ...response.user,
+        role: response.user.role as 'advisor' | 'parent' | 'member',
+        avatar: response.user.avatarUrl,
+        totalPoints: 0, // Will be fetched separately
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setUser(user);
       setIsAuthenticated(true);
     } catch (error: any) {
       const errorMessage = error.message || '登录失败，请检查用户名和密码';
@@ -75,7 +84,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const response = await AuthService.register(userData);
-      setUser(response.user as User);
+      // Convert API response to User type with default values
+      const user: User = {
+        ...response.user,
+        role: response.user.role as 'advisor' | 'parent' | 'member',
+        avatar: undefined, // RegisterResponse doesn't include avatar
+        totalPoints: 0, // Will be fetched separately
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setUser(user);
       setIsAuthenticated(true);
     } catch (error: any) {
       const errorMessage = error.message || '注册失败，请检查输入信息';

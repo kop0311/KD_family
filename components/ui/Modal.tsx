@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { clsx } from 'clsx';
-import { XMarkIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import { Button } from './Button';
 
 interface ModalProps {
@@ -152,7 +152,7 @@ export const Modal: React.FC<ModalProps> = ({
                 className="p-1 rounded-lg hover:bg-white/10 transition-colors text-glass hover:text-white"
                 aria-label="关闭"
               >
-                <XMarkIcon className="h-6 w-6" />
+                <XIcon className="h-6 w-6" />
               </button>
             )}
           </div>

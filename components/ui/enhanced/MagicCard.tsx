@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-export interface MagicCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface MagicCardProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'id' | 'className' | 'style' | 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'title' | 'role' | 'tabIndex'> {
   variant?: 'default' | 'elevated' | 'bordered' | 'gradient' | 'glow';
   hover?: boolean;
   glow?: boolean;

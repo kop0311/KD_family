@@ -193,23 +193,26 @@ export const TaskList: React.FC = () => {
   const queryClient = useQueryClient();
 
   // 获取任务列表
-  const { data: tasks = [], isLoading, error } = useQuery({
+  const { data: tasksResponse, isLoading, error } = useQuery({
     queryKey: ['tasks', filter],
-    queryFn: () => taskAPI.getTasks(filter !== 'all' ? { status: filter } : {})
+    queryFn: () => taskAPI.getTasks()
   });
 
   // 更新任务状态
   const updateTaskMutation = useMutation({
-    mutationFn: ({ taskId, status }: { taskId: number; status: TaskStatus }) => {
+    mutationFn: async ({ taskId, status }: { taskId: number; status: TaskStatus }) => {
       switch (status) {
       case 'claimed':
-        return taskAPI.claimTask(taskId);
+        // TODO: Implement taskAPI.claimTask when endpoint is available
+        throw new Error('任务认领功能暂未实现');
       case 'completed':
         return taskAPI.completeTask(taskId);
       case 'approved':
-        return taskAPI.approveTask(taskId);
+        // TODO: Implement taskAPI.approveTask when endpoint is available
+        throw new Error('任务批准功能暂未实现');
       default:
-        return taskAPI.updateTask(taskId, { status });
+        // TODO: Implement taskAPI.updateTask when endpoint is available
+        throw new Error('任务状态更新功能暂未实现');
       }
     },
     onSuccess: () => {
@@ -227,6 +230,9 @@ export const TaskList: React.FC = () => {
     updateTaskMutation.mutate({ taskId, status });
   };
 
+  // 获取任务数据
+  const tasks = tasksResponse?.data?.data || [];
+  
   // 过滤任务
   const filteredTasks = tasks.filter((task: Task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

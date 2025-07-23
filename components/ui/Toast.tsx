@@ -6,9 +6,9 @@ import { clsx } from 'clsx';
 import {
   CheckCircleIcon,
   XCircleIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-  XMarkIcon
+  AlertTriangleIcon,
+  InfoIcon,
+  XIcon
 } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -26,8 +26,8 @@ export interface ToastProps {
 const toastIcons = {
   success: CheckCircleIcon,
   error: XCircleIcon,
-  warning: ExclamationTriangleIcon,
-  info: InformationCircleIcon
+  warning: AlertTriangleIcon,
+  info: InfoIcon
 };
 
 const toastVariants = {
@@ -135,7 +135,7 @@ export const Toast: React.FC<ToastProps> = ({
           className="ml-3 text-white/60 hover:text-white transition-colors"
           aria-label="关闭通知"
         >
-          <XMarkIcon className="h-4 w-4" />
+          <XIcon className="h-4 w-4" />
         </button>
       </div>
 

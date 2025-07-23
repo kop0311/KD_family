@@ -1,6 +1,7 @@
 /**
  * 性能监控和优化工具
  */
+import React from 'react';
 
 // 性能指标接口
 export interface PerformanceMetrics {

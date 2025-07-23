@@ -224,7 +224,6 @@ class NotificationManager {
         await registration.showNotification(title, {
           badge: '/icons/badge-72x72.png',
           icon: '/icons/icon-192x192.png',
-          vibrate: [200, 100, 200],
           requireInteraction: true,
           ...options
         });
@@ -259,17 +258,7 @@ class NotificationManager {
     await this.sendNotification('任务提醒', {
       body: `${taskTitle} - ${message}`,
       tag: `task-reminder-${taskTitle}`,
-      data: { taskTitle, dueDate: dueDate.toISOString() },
-      actions: [
-        {
-          action: 'view',
-          title: '查看任务'
-        },
-        {
-          action: 'dismiss',
-          title: '忽略'
-        }
-      ]
+      data: { taskTitle, dueDate: dueDate.toISOString() }
     });
   }
 

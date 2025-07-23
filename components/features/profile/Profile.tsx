@@ -1,5 +1,5 @@
 import React from 'react';
-import { GlassContainer } from '@components/ui/GlassContainer';
+import { GlassContainer } from '@/components/ui/GlassContainer';
 
 const Profile: React.FC = () => {
   return (

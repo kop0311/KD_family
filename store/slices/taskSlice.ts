@@ -1,20 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { taskAPI } from '../../services/api';
+import type { Task } from '@/types/task';
+import type { CreateTaskRequest } from '@/types/api';
 
-export interface Task {
-  id: number;
-  title: string;
-  description?: string;
-  points: number;
-  status: 'pending' | 'in_progress' | 'completed' | 'verified';
-  priority: 'low' | 'medium' | 'high';
-  assignedTo?: number;
-  assignedBy: number;
-  dueDate?: string;
-  completedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 interface TaskState {
   tasks: Task[];
@@ -39,7 +28,7 @@ const initialState: TaskState = {
 // Async thunks
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
-  async (filters?: any, { rejectWithValue }) => {
+  async (filters: any | undefined, { rejectWithValue }) => {
     try {
       const response = await taskAPI.getTasks(filters);
       return response.data;
@@ -51,7 +40,7 @@ export const fetchTasks = createAsyncThunk(
 
 export const createTask = createAsyncThunk(
   'tasks/createTask',
-  async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>, { rejectWithValue }) => {
+  async (taskData: CreateTaskRequest, { rejectWithValue }) => {
     try {
       const response = await taskAPI.createTask(taskData);
       return response.data;

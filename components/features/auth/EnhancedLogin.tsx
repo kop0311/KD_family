@@ -118,7 +118,7 @@ const EnhancedLogin: React.FC = () => {
               required
               error={registerForm.errors.username}
               validator={(value) => {
-                const result = validateUsername(String(value));
+                const result = validateUsername(value);
                 return result.isValid ? null : (result.message || '验证失败');
               }}
             />
@@ -134,7 +134,7 @@ const EnhancedLogin: React.FC = () => {
               required
               error={registerForm.errors.email}
               validator={(value) => {
-                const result = validateEmail(String(value));
+                const result = validateEmail(value);
                 return result.isValid ? null : (result.message || '验证失败');
               }}
             />
@@ -150,7 +150,7 @@ const EnhancedLogin: React.FC = () => {
               required
               error={registerForm.errors.fullName}
               validator={(value) => {
-                const result = validateFullName(String(value));
+                const result = validateFullName(value);
                 return result.isValid ? null : (result.message || '验证失败');
               }}
             />
@@ -181,7 +181,7 @@ const EnhancedLogin: React.FC = () => {
               required
               error={registerForm.errors.password}
               validator={(value) => {
-                const result = validatePassword(String(value));
+                const result = validatePassword(value);
                 return result.isValid ? null : (result.message || '验证失败');
               }}
             />
@@ -211,7 +211,7 @@ const EnhancedLogin: React.FC = () => {
               required
               error={loginForm.errors.username}
               validator={(value) => {
-                const result = validateUsername(String(value));
+                const result = validateUsername(value);
                 return result.isValid ? null : (result.message || '验证失败');
               }}
             />
@@ -227,7 +227,7 @@ const EnhancedLogin: React.FC = () => {
               required
               error={loginForm.errors.password}
               validator={(value) => {
-                const result = validatePassword(String(value));
+                const result = validatePassword(value);
                 return result.isValid ? null : (result.message || '验证失败');
               }}
             />

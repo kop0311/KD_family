@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { clsx } from 'clsx';
-import { SunIcon, MoonIcon, ComputerDesktopIcon } from 'lucide-react';
+import { SunIcon, MoonIcon, MonitorIcon } from 'lucide-react';
 import { useTheme } from '@/lib/hooks/useTheme';
 
 interface ThemeToggleProps {
@@ -118,7 +118,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       {
         value: 'system' as const,
         label: '跟随系统',
-        icon: ComputerDesktopIcon,
+        icon: MonitorIcon,
         description: '根据系统设置自动切换'
       }
     ];

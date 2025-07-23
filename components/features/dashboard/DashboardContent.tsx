@@ -11,7 +11,7 @@ export function DashboardContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            欢迎回来，{user?.name || '用户'}！
+            欢迎回来，{user?.username || '用户'}！
           </h1>
           <p className="text-gray-600">
             这是您的家务积分仪表板
@@ -25,7 +25,7 @@ export function DashboardContent() {
               总积分
             </h3>
             <p className="text-3xl font-bold text-blue-600">
-              {user?.points || 0}
+              {user?.totalPoints || 0}
             </p>
           </div>
 

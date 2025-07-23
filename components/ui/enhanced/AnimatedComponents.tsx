@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GlassContainer } from '@/components/ui/GlassContainer';
 import { Button } from '@/components/ui/Button';
 import { Task } from '@/types/task';
-import { CheckCircle, Sparkles, Star } from 'lucide-react';
+import { CheckCircle, Sparkles as SparklesIcon, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // 动画变体

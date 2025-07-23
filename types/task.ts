@@ -143,7 +143,7 @@ export const TASK_STATUS_CONFIG: Record<TaskStatus, TaskStatusConfig> = {
     description: '任务已创建，等待认领',
     color: '#6B7280',
     icon: '⏳',
-    canTransitionTo: ['claimed', 'assigned'],
+    canTransitionTo: ['claimed'],
   },
   claimed: {
     name: '已认领',

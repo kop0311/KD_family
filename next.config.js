@@ -100,10 +100,8 @@ const nextConfig = {
 
   async rewrites() {
     return [
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:3000/api/:path*',
-      },
+      // API routes are handled by Vercel serverless functions
+      // No rewrites needed for Vercel deployment
     ];
   },
 
@@ -139,8 +137,8 @@ const nextConfig = {
     ];
   },
 
-  // Output configuration
-  output: 'standalone',
+  // Output configuration - use default for Vercel
+  // output: 'standalone', // Commented out for Vercel deployment
   
   // Compression
   compress: true,
