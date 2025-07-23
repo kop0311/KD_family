@@ -4,10 +4,11 @@ import { taskService } from '../../../../../lib/supabase'
 // POST /api/tasks/[id]/assign - 分配任务给用户
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const taskId = parseInt(params.id, 10)
+    const { id } = await params
+    const taskId = parseInt(id, 10)
     const { userId } = await request.json()
     
     if (isNaN(taskId)) {
