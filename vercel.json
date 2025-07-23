@@ -1,10 +1,21 @@
 {
   "version": 2,
   "name": "kd-family",
+  "description": "KD之家 - 现代化家务积分管理系统",
   "env": {
     "NODE_ENV": "production"
   },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
   "regions": ["iad1"],
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
   "headers": [
     {
       "source": "/api/(.*)",
@@ -20,8 +31,42 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "cookie",
+          "key": "token"
+        }
+      ],
+      "destination": "/dashboard",
+      "permanent": false
     }
   ],
   "github": {
