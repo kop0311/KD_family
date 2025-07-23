@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "name": "kd-family",
-  "description": "KD之家 - 现代化家务积分管理系统",
   "env": {
     "NODE_ENV": "production"
   },

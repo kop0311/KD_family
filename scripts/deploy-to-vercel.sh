@@ -139,10 +139,22 @@ setup_environment() {
 # 部署到Vercel
 deploy_to_vercel() {
     log_info "部署到Vercel..."
-    
+
+    # 验证vercel.json配置
+    if [ -f "vercel.json" ]; then
+        log_info "验证vercel.json配置..."
+        # 简单的JSON语法检查
+        if ! node -e "JSON.parse(require('fs').readFileSync('vercel.json', 'utf8'))" 2>/dev/null; then
+            log_error "vercel.json配置文件格式错误"
+            exit 1
+        fi
+        log_success "vercel.json配置验证通过"
+    fi
+
     # 部署到生产环境
+    log_info "开始部署到生产环境..."
     vercel --prod --yes
-    
+
     log_success "部署完成！"
 }
 
